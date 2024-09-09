@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{'/styles/login.css'}" th:rel="stylesheet"  type="text/css" >
+
+</head>
+<body>
+<div style="position: absolute; top: 0; left: 0; padding: 10px;">
+  <img th:src="@{'/images/logo.png'}" alt="logo">
+  <span style="color:white; font-size: 20px;font-weight: bold;">MY BANK</span>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="login-info">
+        <p style="font-size: 40px; margin-top: 20px">LOGIN</p>
+        <p style="font-size: 20px;">Sign in to continue</p>
+        <hr style="border-top: 2px solid white; margin-bottom: 15px;">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="login-container">
+        <h2>SIGN IN</h2>
+        <h1 th:if="${param.error}" style="font-family: 'Poppins', sans-serif;text-align: center;font-size: 5px;">
+          <span style="font-size:15px;color:red;" th:text="${session?.SPRING_SECURITY_LAST_EXCEPTION?.message}"></span>
+        </h1>
+        <h1 th:if="${param.errors}" style="font-family: 'Poppins', sans-serif;text-align: center;font-size: 5px;">
+          <span style="font-size:15px;color:red;" th:text="${param.errors}"></span>
+        </h1>
+        <form id="loginForm" th:action="@{'/ui/'}" method="post" >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" class="form-control" id="username" placeholder="Enter Username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" class="form-control" id="password" placeholder="Enter Password" required>
+          </div>
+          <div class="row justify-content-around mt-4">
+            <input type="submit" id="login" value="login" class="col-5 btn narrow-btn"/>
+            <input type="reset" id="cancel" class="col-5 btn narrow-btn1 btn-secondary"/>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

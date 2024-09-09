@@ -1,0 +1,115 @@
+body {
+    background-image:url('/images/login-image.jpg');
+    background-color: rgba(5, 14, 64, 0.99);
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img{
+    width:40px;
+    height: 40px;
+    margin-left: 10px;
+}
+.login-container {
+    background-color: rgba(194, 195, 221, 0.8);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+    margin-left: 60px;
+}
+
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.login-info {
+    color: white;
+    text-align: left;
+    padding-left: 20px;
+    padding-bottom: 40px;
+}
+
+/*  styles for text */
+.login-info p {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+}
+
+/* margin-bottom for the second paragraph */
+.login-info p:nth-child(2) {
+    margin-bottom: 20px;
+}
+
+/*  custom class for narrow button */
+.narrow-btn {
+    /* Adjust the width as needed */
+    width: 50%;
+    /* Center the button */
+    margin: 0 auto;
+    background-color: #f25c19;
+    /* Text color */
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 20px;
+    /* Remove default button border */
+    border: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+/* Button hover effect */
+.narrow-btn:hover,
+.narrow-btn:focus {
+    background-color: #f25c19;
+    /* Text color on hover */
+    color: white;
+}
+.narrow-btn1 {
+    width: 50%;
+    margin: 0 auto; /* Center the button */
+    background-color: grey;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 20px;
+    border: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+/* Button hover effect */
+.narrow-btn:hover,
+.narrow-btn:focus {
+    background-color: #f25c19;
+    color: white;
+}
+
+
+/* Button active effect */
+.narrow-btn:active,
+.narrow-btn.active {
+    background-color: #f25c19 !important;
+    color: white !important; /* Text color on click */
+    box-shadow: none !important;
+}
+
+/* Override Bootstrap input field hover effect */
+input.form-control:hover,
+input.form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* Round the input borders */
+input.form-control {
+    border-radius: 20px;
+
+}
