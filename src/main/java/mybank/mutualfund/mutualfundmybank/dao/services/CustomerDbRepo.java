@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,9 +18,11 @@ public class CustomerDbRepo implements CustomerRepository, UserDetailsService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public CustomerLogin signingUp(CustomerLogin customerLogin) {
-        customerLogin.setCustomerStatus("active");
         try{
             String sql = "INSERT INTO CUSTOMER_LOGIN (customer_id, username, password, phone_number, email, customer_status, attempts) VALUES (LOGIN_ID_SEQ.nextval, ?, ?, ?, ?, ?, ?) ";
             int rowCount = jdbcTemplate.update(sql,

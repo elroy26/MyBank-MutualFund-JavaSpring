@@ -32,16 +32,13 @@ public class MyBankSecurity {
     AuthenticationManager manager;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
     CustomerFailureHandler failureHandler;
     @Autowired
     CustomerSuccessHandler successHandler;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
 
-//        return new BCryptPasswordEncoder();
-        return NoOpPasswordEncoder.getInstance();
-    }
 
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
@@ -62,8 +59,7 @@ public class MyBankSecurity {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/styles/**").permitAll()
-                        .requestMatchers("/profile/register").permitAll()
-                        .requestMatchers("/ui/").permitAll()
+                        .requestMatchers("/ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -85,7 +81,7 @@ public class MyBankSecurity {
 //                .cors(withDefaults());
         AuthenticationManagerBuilder builder=httpSecurity.
                 getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(service);
+        builder.userDetailsService(service).passwordEncoder(passwordEncoder);
         manager=builder.build();
         httpSecurity.authenticationManager(manager);
 
