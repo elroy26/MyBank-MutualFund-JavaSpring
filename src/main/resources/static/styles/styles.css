@@ -1,0 +1,78 @@
+.navbar-custom {
+    background-color: #182052;
+}
+
+.navbar-custom .navbar-brand, .navbar-custom .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-custom .nav-item.active .nav-link {
+    color: #f8f9fa !important;
+}
+
+.navbar-text .bi-person-circle {
+    font-size: 44px; /* Adjust the size as needed */
+    color: #182052; /* Change this to the desired color */
+    margin: 0 10px; /* Optional: Add spacing between the icon and text */
+}
+
+.bi-person-circle:hover {
+    color: #f25c19;
+}
+
+/* Responsive font sizes */
+@media (max-width: 576px) {
+    .navbar-brand  {
+        font-size: 24px;
+    }
+
+    .welcome-text {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 992px) {
+    .welcome-text {
+        font-size: 20px;
+    }
+
+    .navbar-custom .navbar-brand, .navbar-custom .navbar-nav .nav-link, .brand-text, .user-text {
+        font-size: 34px; /* Increase font size for large screens */
+    }
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown-menu {
+    background-color: #f25c19;
+    color: white;
+}
+
+.dropdown-item {
+    color: white;
+}
+
+.navbar-brand {
+    font-size: 46px;
+    font-weight: 800; /* Extra bold */
+}
+
+.navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.btn-logout {
+    background-color: #182052;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+}
+
+.btn-logout:hover {
+    background-color: #f25c19;
+    border: 1px solid #182052;
+    color: white;
+}

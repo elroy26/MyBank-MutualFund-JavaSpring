@@ -33,6 +33,28 @@ public class CustomerDbRepo implements CustomerRepository, UserDetailsService {
     }
 
     @Override
+    public Boolean existsByEmail(String email) {
+        try {
+            String sql = "SELECT COUNT(*) FROM CUSTOMER_LOGIN WHERE email = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
+            return count != null && count > 0;  // If count is greater than 0, username exists
+        } catch (Exception e) {
+            throw new CustomerException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Boolean existsByPhoneNumber(String phoneNumber) {
+        try {
+            String sql = "SELECT COUNT(*) FROM CUSTOMER_LOGIN WHERE  phone_number= ?";
+            Integer count = jdbcTemplate.queryForObject(sql, new Object[]{phoneNumber}, Integer.class);
+            return count != null && count > 0;  // If count is greater than 0, username exists
+        } catch (Exception e) {
+            throw new CustomerException(e.getMessage());
+        }
+    }
+
+    @Override
     public CustomerLogin signingUp(CustomerLogin customerLogin) {
         try{
             String sql = "INSERT INTO CUSTOMER_LOGIN (customer_id, username, password, phone_number, email, customer_status, attempts) VALUES (LOGIN_ID_SEQ.nextval, ?, ?, ?, ?, ?, ?) ";

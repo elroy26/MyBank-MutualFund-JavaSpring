@@ -65,6 +65,10 @@ public class MyBankSecurity {
                         .requestMatchers("/ui/signup").permitAll()
                         .requestMatchers("/profile/register").permitAll()
                         .requestMatchers("/ui/").permitAll()
+                        .requestMatchers("/ui/public/**").permitAll()
+                        .requestMatchers("/ui/check-username").permitAll()
+                        .requestMatchers("/ui/check-email").permitAll()
+                        .requestMatchers("/ui/check-phonenumber").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
