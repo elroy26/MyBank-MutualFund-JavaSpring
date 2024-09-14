@@ -39,6 +39,11 @@ public class MutualfundMVC {
         return "signup";
     }
 
+    @GetMapping("/account")
+    public String profile() {
+        return "profile";
+    }
+
     @GetMapping("/check-username")
     public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam("username") String username) {
         boolean exists = repository.existsByUsername(username);

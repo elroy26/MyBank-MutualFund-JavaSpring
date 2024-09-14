@@ -11,14 +11,14 @@
 }
 
 .navbar-text .bi-person-circle {
-    font-size: 44px; /* Adjust the size as needed */
-    color: #182052; /* Change this to the desired color */
-    margin: 0 10px; /* Optional: Add spacing between the icon and text */
+    color: #182052;
+    margin: 0 10px;
 }
-
 .bi-person-circle:hover {
     color: #f25c19;
 }
+
+
 
 /* Responsive font sizes */
 @media (max-width: 576px) {

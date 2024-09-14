@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns::th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <script th:src="@{'/js/dashboard.js'}"></script>
+  <style>
+    body {
+      background-color: white;
+      color: white;
+    }
+    .btn-primary {
+      background-color: #182052;
+      border-color: #182052;
+      border-radius: 10px;
+    }
+    .btn-primary:hover {
+      background-color: #f5854d;
+      border-color: #f5854d;
+    }
+    .form-control {
+      background-color: #ffffff;
+      border-color: #182052;
+      border-width: 1.5px; /* Adjust the value as needed */
+
+    }
+    .form-control::placeholder {
+      color: grey;
+      opacity: 0.5;
+    }
+    .form-group label {
+      color: #182052;
+      font-weight: bold;
+    }
+    .form-group input:hover{
+      border-color: darkorange;
+    }
+    .form-group textarea:hover{
+      border-color: darkorange;
+    }
+    .card {
+      border: none;
+    }
+    .alert.fade {
+      transition: opacity 1.5s linear;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="dashboard :: dashboard"></div>
+<div class="container-fluid">
+  <div class="row justify-content-between">
+    <div class="col-auto">
+          <a href="javascript:void(0)" onclick="window.history.back()" class="text-light mt-3 "><i class="bi bi-arrow-left-circle-fill btn btn-primary mt-3" style=" font-size: 24px;border-radius: 50px"></i></a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="d-flex align-items-center mb-2">
+    <i class="bi bi-person-circle" style="color: #182052; font-size: 55px;"></i>
+    <h2 class="ml-3" style="color: #182052; font-size: 44px; font-weight: 700; font-family: 'Poppins', sans-serif;">My Profile</h2>
+  </div>
+  <div class="d-flex justify-content-center">
+    <div class="card col col-9 ">
+      <div class="card-body">
+        <form name = "application">
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label for="firstName">FIRST NAME:</label>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required>
+              <span id="firstNameErr" class="error"></span>
+            </div>
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-5">
+              <label for="username">USER NAME:</label>
+              <input type="text" class="form-control" id="username" placeholder="Enter username" >
+              <span id="usernameErr" class="error"></span>
+
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label for="middleName">MIDDLE NAME:</label>
+              <input type="text" class="form-control" id="middleName" placeholder="Enter middle name" required>
+              <span id="middleNameErr" class="error"></span>
+
+            </div>
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-1"></div>
+
+            <div class="form-group col-md-5">
+              <label for="password">PASSWORD:</label>
+              <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
+              <span id="passwordErr" class="error"></span>
+
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label for="lastName">LAST NAME:</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+              <span id="KeyBenefitsErr" class="error"></span>
+
+            </div>
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-1"></div>
+
+            <div class="form-group col-md-5">
+              <label for="email">EMAIL:</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter email" required >
+              <span id="emailErr" class="error"></span>
+
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label for="birthDate">BIRTH DATE:</label>
+              <input type="date" class="form-control" id="birthDate" placeholder="DD/MM/YYYY" required>
+              <span id="birthDateErr" class="error"></span>
+
+            </div>
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-1"></div>
+
+            <div class="form-group col-md-5">
+              <label for="phoneNumber">PHONE NUMBER:</label>
+              <input type="number" class="form-control" id="phoneNumber" placeholder="Enter phone number." required >
+              <span id="phoneNumberErr" class="error"></span>
+
+            </div>
+          </div><div class="form-row">
+          <div class="form-group col-md-5">
+            <label for="address">ADDRESS:</label>
+            <textarea class="form-control" id="address" rows="3" cols="2" placeholder="Enter address." required></textarea>
+            <span id="addressErr" class="error"></span>
+
+          </div>
+          <div class="form-group col-md-1"></div>
+          <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-5">
+              <label for="aadhaarNumber">AADHAAR NUMBER:</label>
+              <input type="number" class="form-control" id="aadhaarNumber" placeholder="Enter aadhaar number." required>
+              <span id="aadhaarNumberErr" class="error"></span>
+
+            </div>
+
+          </div>
+          <br>
+          <button id="add" type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add a modal for displaying the confirmation -->
+<div class="modal" id="confirmationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="headAck" style="color: #182052; font-family:'Montserrat', sans-serif ">Insurance Availed Successfully!</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p id="successMessage" style="color: #182052; font-family: 'Poppins', sans-serif">Thank you for applying this insurance with insurance id </p>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" th:href="@{'/ui/dash'}" id="backHome">Back to Home</button>
+        <button type="button" class="btn btn-primary" th:href="@{'/ui/apply'}" id="viewInsurance">View Insurance</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal" id="errorModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="headerrAck"  style="color: #182052; font-family:'Montserrat', sans-serif ">Error</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p id="errorMessage"  style="color: #182052; font-family: 'Poppins', sans-serif"></p>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" id="viewAllInsurance">View Available Insurances</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

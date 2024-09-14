@@ -16,23 +16,28 @@
 </head>
 <body>
 <div th:fragment="dashboard">
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom" style="background-color: #ffffff;">
-        <div class="container">
-            <a class="navbar-brand" th:href="@{'/ui/dash'}">
-                <img th:src="@{'/images/logo.png'}" alt="My Bank Logo" style="width: 60px; height: 60px;"/>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #ffffff;">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex justify-content-start align-items-start" th:href="@{'/ui/dash'}">
+                <img class="p-0" th:src="@{'/images/logo.png'}" alt="My Bank Logo" style="width: 60px; height: 60px;"/>
                 <span style="color: #182052; font-family: 'Montserrat', sans-serif;">MyBank</span>
             </a>
 
             <div class="navbar-text ml-auto d-flex align-items-center">
                 <span th:id="Username" class="welcome-text" style="color: #182052; font-size: 24px;">Welcome, John Doe</span>
-                <i class="bi bi-person-circle"></i>
 
-                <form id="logoutForm" action="/ui/logout" method="post">
-                    <button id="logoutButton" class="btn btn-logout ml-2" type="submit">Logout</button>
+                <!-- Make the profile icon clickable by wrapping it in an anchor tag -->
+                <a th:href="@{'/ui/account'}">
+                    <i class="bi bi-person-circle" style="font-size: 44px;"></i>
+                </a>
+
+                <form id="logoutForm" action="/ui/logout" method="post" class="ml-2">
+                    <button id="logoutButton" class="btn btn-logout" type="submit">Logout</button>
                 </form>
             </div>
         </div>
     </nav>
+
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,27 +45,27 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
+                    <li class="nav-item pl-4">
                         <a class="nav-link" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="accountsDropdownToggle">
-                            <i class="bi bi-house-door-fill" style="font-size: 20px;"></i> Home
+                            <i class="bi bi-house-door-fill" style="font-size: 18px;"></i> Home
                         </a>
-                    </li>br
+                    </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="insuranceDropdown">
-                            <i class="bi bi-info-circle-fill" style="font-size: 20px;"></i> About Us
+                        <a class="nav-link pl-3" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="insuranceDropdown">
+                            <i class="bi bi-info-circle-fill " style="font-size: 18px;"></i> About Us
                         </a>
-                    </li>br
+                    </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="profileUpdateDropdown">
-                            <i class="bi bi-person-check-fill" style="font-size: 20px;"></i> Profile Update
+                        <a class="nav-link pl-3" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="profileUpdateDropdown">
+                            <i class="bi bi-person-check-fill" style="font-size: 18px;"></i> Profile Update
                         </a>
-                    </li>br
+                    </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item pl-3">
                         <a class="nav-link" style="font-size: 20px; font-family: 'Poppins', sans-serif;" href="#" id="applyMutualFundDropdown">
-                            <i class="bi bi-currency-exchange" style="font-size: 20px;"></i> Holdings
+                            <i class="bi bi-currency-exchange" style="font-size: 18px;"></i> Holdings
                         </a>
                     </li>
                 </ul>
