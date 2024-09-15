@@ -1,6 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.webservice.mvc;
 
-
+import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerLogin;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import mybank.mutualfund.mutualfundmybank.dao.services.CustomerDbRepo;
@@ -21,6 +21,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/ui")
 public class MutualfundMVC {
+    private String  name;
+    private Integer customerId;
     @Autowired
     private CustomerRepository repository;
 
@@ -40,7 +42,10 @@ public class MutualfundMVC {
     }
 
     @GetMapping("/account")
-    public String profile() {
+    public String profile(Model model) {
+        CustomerAccount customer = repository.findByCustomerId(customerId);
+        System.out.println(customer);
+        model.addAttribute("customer", customer);
         return "profile";
     }
 
@@ -70,8 +75,9 @@ public class MutualfundMVC {
     @ResponseBody
     public String customerName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        CustomerLogin customer = repository.findByUserName(name);
+        name = authentication.getName();
+        CustomerAccount customer = repository.findByUserName(name);
+        customerId = customer.getCustomerId();
         return customer.getUsername();
     }
 

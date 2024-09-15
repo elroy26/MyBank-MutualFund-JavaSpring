@@ -9,12 +9,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class MutualFundMyBankApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MutualFundMyBankApplication.class, args);
-//        ConfigurableApplicationContext context=  SpringApplication.run(MutualFundMyBankApplication.class, args);
-//
-//        CustomerDbRepo repo = context.getBean(CustomerDbRepo.class);
-//        String name="elroy";
-//        System.out.println(repo.findByUserName(name));
+//        SpringApplication.run(MutualFundMyBankApplication.class, args);
+        ConfigurableApplicationContext context=  SpringApplication.run(MutualFundMyBankApplication.class, args);
+
+        CustomerDbRepo repo = context.getBean(CustomerDbRepo.class);
+        String name="asdfd";
+        System.out.println(repo.findByUserName(name));
     }
 
 }

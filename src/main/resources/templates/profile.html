@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns::th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -59,7 +59,7 @@
 <div class="container-fluid">
   <div class="row justify-content-between">
     <div class="col-auto">
-          <a href="javascript:void(0)" onclick="window.history.back()" class="text-light mt-3 "><i class="bi bi-arrow-left-circle-fill btn btn-primary mt-3" style=" font-size: 24px;border-radius: 50px"></i></a>
+          <a href="javascript:void(0)" onclick="window.history.back()" class="text-light mt-3 "><i class="bi bi-arrow-left-circle-fill btn btn-primary mt-3" style=" font-size: 24px;border-radius: 50px;padding: 3px"></i></a>
     </div>
   </div>
 </div>
@@ -72,26 +72,33 @@
   <div class="d-flex justify-content-center">
     <div class="card col col-9 ">
       <div class="card-body">
-        <form name = "application">
+        <div id="email-alert" class="alert alert-danger d-none" role="alert">
+        </div>
+        <div id="phone-alert" class="alert alert-danger d-none" role="alert">
+          <!-- Phone alert message will be dynamically set here -->
+        </div>
+        <form name = "application" th:action="@{'/account/update'}" method="post">
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="firstName">FIRST NAME:</label>
-              <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required>
+              <input type="text" class="form-control" th:value="${customer.firstName}" th:name="firstName" id="firstName" placeholder="Enter first name" required>
               <span id="firstNameErr" class="error"></span>
             </div>
             <div class="form-group col-md-1"></div>
             <div class="form-group col-md-1"></div>
             <div class="form-group col-md-5">
               <label for="username">USER NAME:</label>
-              <input type="text" class="form-control" id="username" placeholder="Enter username" >
-              <span id="usernameErr" class="error"></span>
-
+              <div class="input-group">
+                <input type="text" class="form-control"  th:value="${customer.username}" th:name="username" id="username" placeholder="Enter username" required oninput="checkUsername()">
+                <span id="username-status-icon" class="input-group-text d-none"></span>
+              </div>
+              <span id="username-status-message" class="d-none"></span>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="middleName">MIDDLE NAME:</label>
-              <input type="text" class="form-control" id="middleName" placeholder="Enter middle name" required>
+              <input type="text" class="form-control" th:value="${customer.middleName}" th:name="middleName" id="middleName" placeholder="Enter middle name" required>
               <span id="middleNameErr" class="error"></span>
 
             </div>
@@ -100,7 +107,7 @@
 
             <div class="form-group col-md-5">
               <label for="password">PASSWORD:</label>
-              <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
+              <input type="password" name="password" th:value="${customer.password}" th:name="password" class="form-control" id="password" placeholder="Enter password" required>
               <span id="passwordErr" class="error"></span>
 
             </div>
@@ -109,7 +116,7 @@
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="lastName">LAST NAME:</label>
-              <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+              <input type="text" class="form-control" th:value="${customer.lastName}" th:name="lastName" id="lastName" placeholder="Enter last name" required>
               <span id="KeyBenefitsErr" class="error"></span>
 
             </div>
@@ -118,15 +125,17 @@
 
             <div class="form-group col-md-5">
               <label for="email">EMAIL:</label>
-              <input type="email" class="form-control" id="email" placeholder="Enter email" required >
-              <span id="emailErr" class="error"></span>
-
+              <div class="input-group">
+                <input type="email" th:name="email" th:value="${customer.email}" class="form-control" id="email" placeholder="Enter email" required oninput="checkEmail()">
+                <span id="email-status-icon" class="input-group-text d-none"></span>
+              </div>
+              <span id="email-status-message" class="d-none"></span>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="birthDate">BIRTH DATE:</label>
-              <input type="date" class="form-control" id="birthDate" placeholder="DD/MM/YYYY" required>
+              <input type="date" class="form-control" th:value="${customer.birthDate}" th:name="birthDate" id="birthDate" placeholder="DD/MM/YYYY" required>
               <span id="birthDateErr" class="error"></span>
 
             </div>
@@ -134,15 +143,17 @@
             <div class="form-group col-md-1"></div>
 
             <div class="form-group col-md-5">
-              <label for="phoneNumber">PHONE NUMBER:</label>
-              <input type="number" class="form-control" id="phoneNumber" placeholder="Enter phone number." required >
-              <span id="phoneNumberErr" class="error"></span>
-
+              <label for="email">PHONE NUMBER:</label>
+              <div class="input-group">
+                <input type="number" maxlength="10" minlength="10" th:value="${customer.phoneNumber}" th:name="phoneNumber" class="form-control" id="phonenumber" placeholder="Enter phone number" required oninput="checkPhoneNumber()">
+                <span id="phone-status-icon" class="input-group-text d-none"></span>
+              </div>
+              <span id="phone-status-message" class="d-none"></span>
             </div>
           </div><div class="form-row">
           <div class="form-group col-md-5">
             <label for="address">ADDRESS:</label>
-            <textarea class="form-control" id="address" rows="3" cols="2" placeholder="Enter address." required></textarea>
+            <textarea class="form-control" id="address" th:text="${customer.address}" th:name="address" rows="3" placeholder="Enter address." required></textarea>
             <span id="addressErr" class="error"></span>
 
           </div>
@@ -150,11 +161,9 @@
           <div class="form-group col-md-1"></div>
             <div class="form-group col-md-5">
               <label for="aadhaarNumber">AADHAAR NUMBER:</label>
-              <input type="number" class="form-control" id="aadhaarNumber" placeholder="Enter aadhaar number." required>
+              <input type="number" class="form-control" th:value="${customer.aadhaarNumber}" th:name="aadhaarNumber" id="aadhaarNumber" placeholder="Enter aadhaar number." required>
               <span id="aadhaarNumberErr" class="error"></span>
-
             </div>
-
           </div>
           <br>
           <button id="add" type="submit" class="btn btn-primary">Update Profile</button>
@@ -163,49 +172,149 @@
     </div>
   </div>
 </div>
-<!-- Add a modal for displaying the confirmation -->
-<div class="modal" id="confirmationModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="headAck" style="color: #182052; font-family:'Montserrat', sans-serif ">Insurance Availed Successfully!</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <!-- Modal body -->
-      <div class="modal-body">
-        <p id="successMessage" style="color: #182052; font-family: 'Poppins', sans-serif">Thank you for applying this insurance with insurance id </p>
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" th:href="@{'/ui/dash'}" id="backHome">Back to Home</button>
-        <button type="button" class="btn btn-primary" th:href="@{'/ui/apply'}" id="viewInsurance">View Insurance</button>
-      </div>
-    </div>
-  </div>
-</div>
+<script>
+  var passwordField = document.getElementById("password");
+  var confirmPasswordField = document.getElementById("confirmPassword");
+  var errorMessage = document.getElementById("error-message");
+  var passwordStrengthMessage = document.getElementById("password-strength-message");
+  var isValidUsername, isValidEmail, isValidPhoneNumber, isValidPassword;
 
-<!-- Error Modal -->
-<div class="modal" id="errorModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="headerrAck"  style="color: #182052; font-family:'Montserrat', sans-serif ">Error</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <!-- Modal body -->
-      <div class="modal-body">
-        <p id="errorMessage"  style="color: #182052; font-family: 'Poppins', sans-serif"></p>
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-primary" id="viewAllInsurance">View Available Insurances</button>
-      </div>
-    </div>
-  </div>
-</div>
+  // Function to check if username is available
+  function checkUsername() {
+    const username = document.getElementById('username').value;
+    const statusSpan = document.getElementById('username-status-message');
+    const statusIcon = document.getElementById('username-status-icon');
 
+    if (username) {
+      fetch(`/ui/check-username?username=${username}`)
+              .then(response => response.json())
+              .then(data => {
+                if (data.exists) {
+                  statusSpan.textContent = 'Username already taken';
+                  statusSpan.className = 'text-danger'; // Add Bootstrap danger class
+                  statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+                  isValidUsername = false;
+                } else {
+                  statusSpan.textContent = 'Username available';
+                  statusSpan.className = 'text-success'; // Add Bootstrap success class
+                  statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
+                  isValidUsername = true;
+                }
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none'); // Show the icon
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                statusSpan.textContent = 'An error occurred';
+                statusSpan.className = 'text-danger'; // Add Bootstrap danger class
+                statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none');
+                isValidUsername = false;
+              });
+    } else {
+      statusSpan.classList.add('d-none'); // Hide the message if username is empty
+      statusIcon.classList.add('d-none');
+    }
+  }
 
+  // Function to check if email is already in use
+  function checkEmail() {
+    const email = document.getElementById('email').value;
+    const statusSpan = document.getElementById('email-status-message');
+    const statusIcon = document.getElementById('email-status-icon');
+    const emailAlert = document.getElementById('email-alert');
+
+    if (email) {
+      fetch(`/ui/check-email?email=${email}`)
+              .then(response => response.json())
+              .then(data => {
+                if (data.exists) {
+                  statusSpan.textContent = ''; // Clear the status span message
+                  statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+
+                  // Update the Bootstrap alert with error message
+                  emailAlert.textContent = 'This email address is already registered. Please log in or use a different email address.';
+                  emailAlert.classList.remove('d-none'); // Show the alert
+                  isValidEmail = false;
+                } else {
+                  statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
+                  emailAlert.classList.add('d-none'); // Hide the alert if email is available
+                  isValidEmail = true;
+                }
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none');
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                statusSpan.textContent = 'An error occurred';
+                statusSpan.className = 'text-danger'; // Add Bootstrap danger class
+                statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none'); // Show the icon
+                isValidEmail = false;
+              });
+    } else {
+      statusSpan.classList.add('d-none'); // Hide the message if email is empty
+      statusIcon.classList.add('d-none'); // Hide the icon
+      emailAlert.classList.add('d-none');
+    }
+  }
+
+  // Function to check if phone number is already in use
+  function checkPhoneNumber() {
+    const phoneNumber = document.getElementById('phonenumber').value;
+    const statusSpan = document.getElementById('phone-status-message');
+    const statusIcon = document.getElementById('phone-status-icon');
+    const phoneAlert = document.getElementById('phone-alert');
+
+    if (phoneNumber) {
+      fetch(`/ui/check-phonenumber?phoneNumber=${phoneNumber}`)
+              .then(response => response.json())
+              .then(data => {
+                if (data.exists) {
+                  statusSpan.textContent = ''; // Clear the status span message
+                  statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+
+                  // Update the Bootstrap alert with error message
+                  phoneAlert.textContent = 'This phone number is already registered. Please use a different number or log in.';
+                  phoneAlert.classList.remove('d-none'); // Show the alert
+                  isValidPhoneNumber = false;
+                } else {
+                  statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
+                  phoneAlert.classList.add('d-none'); // Hide the alert if phone number is available
+                  isValidPhoneNumber = true;
+                }
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none');
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                statusSpan.textContent = 'An error occurred';
+                statusSpan.className = 'text-danger'; // Add Bootstrap danger class
+                statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
+                statusSpan.classList.remove('d-none'); // Show the message
+                statusIcon.classList.remove('d-none'); // Show the icon
+                isValidPhoneNumber = false;
+              });
+    } else {
+      statusSpan.classList.add('d-none'); // Hide the message if phone number is empty
+      statusIcon.classList.add('d-none'); // Hide the icon
+      phoneAlert.classList.add('d-none');
+    }
+  }
+  async function validateForm() {
+    await checkUsername(); // Wait for username check
+    await checkEmail();    // Wait for email check
+    await checkPhoneNumber(); // Wait for phone number check
+
+    checkPasswordMatch();
+    checkPasswordStrength();
+
+    // Combine the validation results
+    return isValidUsername && isValidEmail && isValidPhoneNumber;
+     // Allow form submission if all checks pass
+  }
+</script>
 </body>
 </html>

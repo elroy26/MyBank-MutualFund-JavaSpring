@@ -21,6 +21,7 @@ public class CustomerSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomerLogin customer = (CustomerLogin) authentication.getPrincipal();
+        service.isAccountExists(customer.getUsername());
         if (!customer.getCustomerStatus().equals("inactive")) {
             if(customer.getAttempts()>1)
             {
