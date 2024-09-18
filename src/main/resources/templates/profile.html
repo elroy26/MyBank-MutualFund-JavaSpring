@@ -119,8 +119,8 @@
               <label for="password">PASSWORD:</label>
               <div class="input-group">
                 <input type="password" name="password" th:value="${customer.password}" th:name="password" class="form-control" id="password" readonly placeholder="Enter password" required>
-                <span class="text-warning input-group-text btn btn-danger" id="change-password-span" style="cursor: pointer; font-weight: bolder;" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                  <i class="bi bi-shield-lock-fill"></i> Change Password
+                <span class="text-warning input-group-text btn-danger btn-outline-danger" id="change-password-span" style="cursor: pointer; font-weight: bolder;" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                  <i class="bi bi-shield-lock-fill pe-1"></i>Change Password
                 </span>
               </div>
               <span id="passwordErr" class="error"></span>
@@ -188,6 +188,7 @@
     </div>
   </div>
 </div>
+
 <!-- Bootstrap Modal for Changing Password -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -200,7 +201,10 @@
         <form id="updatePasswordForm">
           <div class="form-group">
             <label for="currentPassword">Current Password:</label>
-            <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" required>
+            <div class="input-group">
+              <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" required onblur="checkCurrentPassword()">
+              <span class="input-group-text" id="currentPasswordStatus" style="display: none;"></span>
+            </div>
           </div>
           <div class="form-group">
             <label for="newPassword">New Password:</label>
@@ -211,15 +215,17 @@
             <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" required>
             <span id="passwordUpdateErr" class="error"></span>
           </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="updatePassword()">Save changes</button>
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="updatePassword()">Save changes</button>
       </div>
     </div>
   </div>
 </div>
+
+
 
 <script>
   var passwordField = document.getElementById("password");
@@ -227,6 +233,17 @@
   var errorMessage = document.getElementById("error-message");
   var passwordStrengthMessage = document.getElementById("password-strength-message");
   var isValidUsername, isValidEmail, isValidPhoneNumber, isValidPassword;
+
+  $(document).ready(function () {
+    // Reset password field and status icon when the modal is closed
+    $('#changePasswordModal').on('hidden.bs.modal', function (e) {
+      // Clear the password input field and reset the border color
+      $('#currentPassword').val('').css('border-color', '');
+
+      // Hide the status icon
+      $('#currentPasswordStatus').html('').hide();
+    });
+  });
 
   // Function to check if username is available
   function checkUsername() {
@@ -279,6 +296,48 @@
       statusIcon.addClass('d-none');
     }
   }
+
+  function checkCurrentPassword() {
+    var currentPassword = $("#currentPassword").val();
+    var username = $('#current-username').val(); // Replace with actual username (retrieve it if needed)
+    var statusIcon = $("#currentPasswordStatus");
+    var currentPasswordInput = $("#currentPassword");
+
+    // If the input field is empty, hide the icon and reset the border color
+    if (currentPassword === '') {
+      currentPasswordInput.css("border-color", ""); // Reset border color
+      statusIcon.html('').hide(); // Hide the status icon and clear the message
+      return; // Stop further execution if input is empty
+    }
+
+    // Make an AJAX call to the check-password API using jQuery
+    $.ajax({
+      url: '/account/check-password',
+      type: 'GET',
+      data: {
+        username: username,
+        password: currentPassword
+      },
+      success: function(response) {
+        // Show the status icon when the password check occurs
+        statusIcon.show();
+
+        if (response === true) {
+          // If the password matches, show a tick mark and success message
+          currentPasswordInput.css("border-color", "green");
+          statusIcon.html('<i class="bi bi-check-circle-fill text-success pe-1"></i> <span class="text-success">Password correct</span>'); // Bootstrap Icons and message
+        } else {
+          // If the password does not match, show an error mark and error message
+          currentPasswordInput.css("border-color", "red");
+          statusIcon.html('<i class="bi bi-x-circle-fill text-danger pe-1"></i> <span class="text-danger">Password incorrect</span>');
+        }
+      },
+      error: function() {
+        console.log("Error occurred while checking the password.");
+      }
+    });
+  }
+
 
 
   // Function to check if email is already in use
@@ -394,16 +453,14 @@
   }
 
   async function validateForm() {
-    await checkUsername(); // Wait for username check
-    await checkEmail();    // Wait for email check
-    await checkPhoneNumber(); // Wait for phone number check
+    await checkUsername();
+    await checkEmail();
+    await checkPhoneNumber();
 
     checkPasswordMatch();
     checkPasswordStrength();
 
-    // Combine the validation results
     return isValidUsername && isValidEmail && isValidPhoneNumber;
-     // Allow form submission if all checks pass
   }
 </script>
 </body>

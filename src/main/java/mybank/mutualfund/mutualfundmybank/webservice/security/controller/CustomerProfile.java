@@ -5,6 +5,7 @@ import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,8 @@ public class CustomerProfile {
 
     @Autowired
     CustomerRepository repository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     Logger logger = LoggerFactory.getLogger(CustomerProfile.class);
 
 
@@ -82,4 +85,19 @@ public class CustomerProfile {
         model.addAttribute("account", account);
         return account;
     }
+
+    @GetMapping("/check-password")
+    public Boolean checkPassword(@RequestParam String username, @RequestParam String password) {
+        // Retrieve the customer account based on the username
+        CustomerAccount account = repository.findByUserName(username);
+
+        // Check if account exists
+        if (account == null) {
+            logger.error("Account not found for username: " + username);
+            return false;
+        }
+
+        return passwordEncoder.matches(password, account.getPassword());
+    }
+
 }
