@@ -202,19 +202,41 @@
           <div class="form-group">
             <label for="currentPassword">Current Password:</label>
             <div class="input-group">
-              <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" required onblur="checkCurrentPassword()">
               <span class="input-group-text" id="currentPasswordStatus" style="display: none;"></span>
+
+              <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password" required onblur="checkCurrentPassword()">
+              <button type="button" class="btn btn-primary" id="toggleCurrentPassword">
+                <i class="bi bi-eye"></i>
+              </button>
+
             </div>
           </div>
           <div class="form-group">
             <label for="newPassword">New Password:</label>
-            <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" required>
+            <div class="input-group">
+              <span id="newPasswordIcon" class="input-group-text" style="display: none;"></span> <!-- Icon will go here -->
+              <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" required onblur="checkNewPassword()">
+              <button type="button" class="btn btn-primary" id="toggleNewPassword">
+                <i class="bi bi-eye"></i>
+              </button>
+
+            </div>
+            <span id="newPasswordStatusMessage" class="text-danger d-none"></span> <!-- Error message will go here -->
           </div>
+
           <div class="form-group">
             <label for="confirmPassword">Confirm New Password:</label>
-            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" required>
-            <span id="passwordUpdateErr" class="error"></span>
+            <div class="input-group">
+              <span id="confirmPasswordIcon" style="display: none;" class="input-group-text"></span>
+              <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" required oninput="checkConfirmPassword()">
+              <button type="button" class="btn btn-primary" id="toggleConfirmPassword">
+                <i class="bi bi-eye"></i>
+              </button>
+
+            </div>
+            <span id="confirmPasswordStatusMessage" class="text-danger d-none"></span>
           </div>
+
           <div class="modal-footer">
             <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-primary" onclick="updatePassword()">Save changes</button>
@@ -227,6 +249,7 @@
 
 
 
+
 <script>
   var passwordField = document.getElementById("password");
   var confirmPasswordField = document.getElementById("confirmPassword");
@@ -235,15 +258,48 @@
   var isValidUsername, isValidEmail, isValidPhoneNumber, isValidPassword;
 
   $(document).ready(function () {
-    // Reset password field and status icon when the modal is closed
+    // Function to toggle password visibility
+    function togglePasswordVisibility(inputId, buttonId) {
+      $(buttonId).on('click', function () {
+        var inputField = $(inputId);
+        var type = inputField.attr('type') === 'password' ? 'text' : 'password';
+        inputField.attr('type', type);
+        var icon = $(this).find('i');
+        icon.toggleClass('bi-eye bi-eye-slash');
+      });
+    }
+
+    // Initialize password visibility toggle for each field
+    togglePasswordVisibility('#currentPassword', '#toggleCurrentPassword');
+    togglePasswordVisibility('#newPassword', '#toggleNewPassword');
+    togglePasswordVisibility('#confirmPassword', '#toggleConfirmPassword');
+    // Disable the new password and confirm password fields when the page loads
+    $("#newPassword").prop("disabled", true);
+    $("#confirmPassword").prop("disabled", true);
+
+    // Reset password fields and status icons when the modal is closed
     $('#changePasswordModal').on('hidden.bs.modal', function (e) {
-      // Clear the password input field and reset the border color
+      // Clear the current password input field and reset its border color
       $('#currentPassword').val('').css('border-color', '');
 
-      // Hide the status icon
+      // Hide the current password status icon and message
       $('#currentPasswordStatus').html('').hide();
+
+      // Clear the new password input field and reset its border color and icon
+      $('#newPassword').val('').css('border-color', '');
+      $('#newPasswordIcon').html('').hide(); // Clear the new password icon
+      $('#newPasswordStatusMessage').html('').addClass('d-none'); // Hide the new password status message
+
+      // Clear the confirm password input field and reset its border color
+      $('#confirmPassword').val('').css('border-color', '');
+
+      // Disable the New Password and Confirm Password inputs
+      $("#newPassword").prop("disabled", true);
+      $("#confirmPassword").prop("disabled", true);
     });
   });
+
+
 
   // Function to check if username is available
   function checkUsername() {
@@ -302,11 +358,15 @@
     var username = $('#current-username').val(); // Replace with actual username (retrieve it if needed)
     var statusIcon = $("#currentPasswordStatus");
     var currentPasswordInput = $("#currentPassword");
+    var newPasswordInput = $("#newPassword");
+    var confirmPasswordInput = $("#confirmPassword");
 
-    // If the input field is empty, hide the icon and reset the border color
+    // If the input field is empty, hide the icon, reset the border color, and disable the new password fields
     if (currentPassword === '') {
       currentPasswordInput.css("border-color", ""); // Reset border color
       statusIcon.html('').hide(); // Hide the status icon and clear the message
+      newPasswordInput.prop("disabled", true); // Disable New Password input
+      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
       return; // Stop further execution if input is empty
     }
 
@@ -323,13 +383,17 @@
         statusIcon.show();
 
         if (response === true) {
-          // If the password matches, show a tick mark and success message
+          // If the password matches, enable the new password fields and show success message
           currentPasswordInput.css("border-color", "green");
-          statusIcon.html('<i class="bi bi-check-circle-fill text-success pe-1"></i> <span class="text-success">Password correct</span>'); // Bootstrap Icons and message
+          statusIcon.html('<i class="bi bi-check-circle-fill text-success pe-1"></i> <span class="text-success">Password is correct</span>');
+          newPasswordInput.prop("disabled", false); // Enable New Password input
+          confirmPasswordInput.prop("disabled", true); // Enable Confirm Password input
         } else {
-          // If the password does not match, show an error mark and error message
+          // If the password does not match, disable the new password fields and show error message
           currentPasswordInput.css("border-color", "red");
-          statusIcon.html('<i class="bi bi-x-circle-fill text-danger pe-1"></i> <span class="text-danger">Password incorrect</span>');
+          statusIcon.html('<i class="bi bi-x-circle-fill text-danger pe-1"></i> <span class="text-danger">Password is incorrect</span>');
+          newPasswordInput.prop("disabled", true); // Disable New Password input
+          confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
         }
       },
       error: function() {
@@ -338,6 +402,65 @@
     });
   }
 
+  // Function to check if the new password matches the current password and meets the minimum length requirement
+  function checkNewPassword() {
+    var currentPassword = $("#currentPassword").val();
+    var newPassword = $("#newPassword").val();
+    var newPasswordIcon = $("#newPasswordIcon");
+    var newPasswordStatusMessage = $("#newPasswordStatusMessage");
+    var confirmPasswordInput = $("#confirmPassword");
+
+    // Show the icon initially when the function is called
+    newPasswordIcon.show();
+
+    // Check if the new password is less than 8 characters
+    if (newPassword.length < 8) {
+      // Show error for password length
+      newPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
+      $("#newPassword").css("border-color", "red"); // Red border
+      newPasswordStatusMessage.html('Password must be at least 8 characters long');
+      newPasswordStatusMessage.removeClass('d-none'); // Show the error message
+      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+    } else if (newPassword === currentPassword) {
+      // If new password matches the current password, show an error message and red icon
+      newPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
+      $("#newPassword").css("border-color", "red"); // Red border
+      newPasswordStatusMessage.html('New password is the same as the old password');
+      newPasswordStatusMessage.removeClass('d-none'); // Show the error message
+      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+    } else {
+      // If new password is different and has a length of at least 8 characters, show green tick and hide the message
+      newPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
+      $("#newPassword").css("border-color", "green"); // Green border
+      newPasswordStatusMessage.html(''); // Clear any previous messages
+      newPasswordStatusMessage.addClass('d-none'); // Hide the message
+      confirmPasswordInput.prop("disabled", false); // Enable Confirm Password input
+    }
+  }
+
+  // Function to check if the confirm password matches the new password
+  function checkConfirmPassword() {
+    var newPassword = $("#newPassword").val();
+    var confirmPassword = $("#confirmPassword").val();
+    var confirmPasswordIcon = $("#confirmPasswordIcon");
+    var confirmPasswordStatusMessage = $("#confirmPasswordStatusMessage");
+
+    // Show the confirm password icon when the input is being checked
+    confirmPasswordIcon.show();
+
+    // Check if the confirm password matches the new password
+    if (confirmPassword === newPassword) {
+      // If passwords match, show the success tick and hide error messages
+      confirmPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
+      $("#confirmPassword").css("border-color", "green"); // Green border
+      confirmPasswordStatusMessage.html('').addClass('d-none'); // Clear and hide the error message
+    } else {
+      // If passwords do not match, show the error message and red 'X' icon
+      confirmPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
+      $("#confirmPassword").css("border-color", "red"); // Red border
+      confirmPasswordStatusMessage.html('Passwords do not match').removeClass('d-none').show(); // Show the error message
+    }
+  }
 
 
   // Function to check if email is already in use
@@ -396,7 +519,6 @@
     }
   }
 
-  // Function to check if phone number is already in use
   // Function to check if phone number is already in use
   function checkPhoneNumber() {
     const currentPhone = $('#current-phone').val();
