@@ -199,6 +199,19 @@ public class CustomerDbRepo implements CustomerRepository, UserDetailsService {
         }
     }
 
+    @Override
+    public Boolean updatePassword(String password) {
+        try {
+            // Update the CUSTOMER_LOGIN table for the password
+            String updatePasswordQuery = "UPDATE CUSTOMER_LOGIN SET PASSWORD = ? WHERE CUSTOMER_ID = ?";
+            jdbcTemplate.update(updatePasswordQuery, password, customerId);
+            return true;
+        } catch (Exception ex) {
+            System.err.println("An error occurred while updating the password: " + ex.getMessage());
+            throw new CustomerException(ex.getMessage());
+        }
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

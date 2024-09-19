@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mutual Funds</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+
+</head>
+<body>
+<div th:fragment="fundAvailable">
+  <div class="container mt-5">
+    <h2 class="mb-4" style="color: #182052;">Available Mutual Funds</h2>
+
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+      <span th:text="${error}"></span>
+    </div>
+
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th>Fund Name</th>
+        <th>Expense Ratio</th>
+        <th>NAV Value</th>
+        <th>Exit Load</th>
+        <th>Asset Under Management</th>
+        <th>Minimum Investment Amount</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="fund : ${fundAvailable}">
+        <td th:text="${fund.fundName}"></td>
+        <td th:text="${fund.expenseRatio}"></td>
+        <td th:text="${fund.navValue}"></td>
+        <td th:text="${fund.exitLoad}"></td>
+        <td th:text="${fund.assetUnderManagement}"></td>
+        <td th:text="${fund.minInvestAmt}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</div>
+</body>
+</html>

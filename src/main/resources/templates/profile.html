@@ -198,7 +198,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="updatePasswordForm">
+        <form id="updatePasswordForm" th:action="@{/account/updatePassword}" method="post">
           <div class="form-group">
             <label for="currentPassword">Current Password:</label>
             <div class="input-group">
@@ -215,7 +215,7 @@
             <label for="newPassword">New Password:</label>
             <div class="input-group">
               <span id="newPasswordIcon" class="input-group-text" style="display: none;"></span> <!-- Icon will go here -->
-              <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" required onblur="checkNewPassword()">
+              <input type="password" class="form-control" th:name="newPassword" id="newPassword" placeholder="Enter new password" required onblur="checkNewPassword()">
               <button type="button" class="btn btn-primary" id="toggleNewPassword">
                 <i class="bi bi-eye"></i>
               </button>
@@ -239,7 +239,7 @@
 
           <div class="modal-footer">
             <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="updatePassword()">Save changes</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
           </div>
         </form>
       </div>
@@ -255,7 +255,7 @@
   var confirmPasswordField = document.getElementById("confirmPassword");
   var errorMessage = document.getElementById("error-message");
   var passwordStrengthMessage = document.getElementById("password-strength-message");
-  var isValidUsername, isValidEmail, isValidPhoneNumber, isValidPassword;
+  var isValidUsername, isValidEmail, isValidPhoneNumber, isValidCurrentPassword, isValidNewPassword, isValidConfirmPassword;
 
   $(document).ready(function () {
     // Function to toggle password visibility
@@ -366,7 +366,8 @@
       currentPasswordInput.css("border-color", ""); // Reset border color
       statusIcon.html('').hide(); // Hide the status icon and clear the message
       newPasswordInput.prop("disabled", true); // Disable New Password input
-      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+      confirmPasswordInput.prop("disabled", true);
+      isValidCurrentPassword=false// Disable Confirm Password input
       return; // Stop further execution if input is empty
     }
 
@@ -385,15 +386,17 @@
         if (response === true) {
           // If the password matches, enable the new password fields and show success message
           currentPasswordInput.css("border-color", "green");
-          statusIcon.html('<i class="bi bi-check-circle-fill text-success pe-1"></i> <span class="text-success">Password is correct</span>');
+          statusIcon.html('<i class="bi bi-check-circle-fill text-success"></i> ');
           newPasswordInput.prop("disabled", false); // Enable New Password input
-          confirmPasswordInput.prop("disabled", true); // Enable Confirm Password input
+          confirmPasswordInput.prop("disabled", true);
+          isValidCurrentPassword=true;// Enable Confirm Password input
         } else {
           // If the password does not match, disable the new password fields and show error message
           currentPasswordInput.css("border-color", "red");
           statusIcon.html('<i class="bi bi-x-circle-fill text-danger pe-1"></i> <span class="text-danger">Password is incorrect</span>');
           newPasswordInput.prop("disabled", true); // Disable New Password input
-          confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+          confirmPasswordInput.prop("disabled", true);
+          isValidCurrentPassword=false;// Disable Confirm Password input
         }
       },
       error: function() {
@@ -420,21 +423,24 @@
       $("#newPassword").css("border-color", "red"); // Red border
       newPasswordStatusMessage.html('Password must be at least 8 characters long');
       newPasswordStatusMessage.removeClass('d-none'); // Show the error message
-      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+      confirmPasswordInput.prop("disabled", true);
+      isValidNewPassword=false;// Disable Confirm Password input
     } else if (newPassword === currentPassword) {
       // If new password matches the current password, show an error message and red icon
       newPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
       $("#newPassword").css("border-color", "red"); // Red border
       newPasswordStatusMessage.html('New password is the same as the old password');
       newPasswordStatusMessage.removeClass('d-none'); // Show the error message
-      confirmPasswordInput.prop("disabled", true); // Disable Confirm Password input
+      confirmPasswordInput.prop("disabled", true);
+      isValidNewPassword=false;// Disable Confirm Password input
     } else {
       // If new password is different and has a length of at least 8 characters, show green tick and hide the message
       newPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
       $("#newPassword").css("border-color", "green"); // Green border
       newPasswordStatusMessage.html(''); // Clear any previous messages
       newPasswordStatusMessage.addClass('d-none'); // Hide the message
-      confirmPasswordInput.prop("disabled", false); // Enable Confirm Password input
+      confirmPasswordInput.prop("disabled", false);
+      isValidNewPassword=true;// Enable Confirm Password input
     }
   }
 
@@ -454,11 +460,13 @@
       confirmPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
       $("#confirmPassword").css("border-color", "green"); // Green border
       confirmPasswordStatusMessage.html('').addClass('d-none'); // Clear and hide the error message
+      isValidConfirmPassword=true;
     } else {
       // If passwords do not match, show the error message and red 'X' icon
       confirmPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
       $("#confirmPassword").css("border-color", "red"); // Red border
       confirmPasswordStatusMessage.html('Passwords do not match').removeClass('d-none').show(); // Show the error message
+      isValidConfirmPassword=false;
     }
   }
 
@@ -578,11 +586,11 @@
     await checkUsername();
     await checkEmail();
     await checkPhoneNumber();
+    await checkCurrentPassword();
+    await checkNewPassword();
+    await checkConfirmPassword();
 
-    checkPasswordMatch();
-    checkPasswordStrength();
-
-    return isValidUsername && isValidEmail && isValidPhoneNumber;
+    return isValidUsername && isValidEmail && isValidPhoneNumber && isValidCurrentPassword && isValidConfirmPassword && isValidNewPassword;
   }
 </script>
 </body>

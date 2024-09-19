@@ -16,4 +16,7 @@ public interface CustomerRepository {
     void updateStatus(CustomerLogin customer);
     String updateAccount(CustomerAccount account);
     Boolean isAccountExists(String username);
+    Boolean updatePassword(String password);
 }
+
+

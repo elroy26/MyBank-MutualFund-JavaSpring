@@ -100,4 +100,9 @@ public class CustomerProfile {
         return passwordEncoder.matches(password, account.getPassword());
     }
 
+    @PostMapping("/updatePassword")
+    public String updatePassword( @RequestParam("newPassword") String newPassword) {
+        repository.updatePassword( passwordEncoder.encode(newPassword));
+        return "redirect:/profile?success";
+    }
 }
