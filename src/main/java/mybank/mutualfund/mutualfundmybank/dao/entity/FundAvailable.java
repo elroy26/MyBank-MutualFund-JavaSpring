@@ -8,14 +8,14 @@ public class FundAvailable {
     private Float navValue;
     private Integer managerId;
     private Float exitLoad;
-    private Double assetUnderManagement;
+    private Double AUM;
     private Double minInvestAmt;
     private Integer fundCompanyID;
 
     public FundAvailable() {
     }
 
-    public FundAvailable(Integer fundAvailableId, String fundName, Integer fundTypeId, Float expenseRatio, Float navValue, Integer managerId, Float exitLoad, Double assetUnderManagement, Double minInvestAmt, Integer fundCompanyID) {
+    public FundAvailable(Integer fundAvailableId, String fundName, Integer fundTypeId, Float expenseRatio, Float navValue, Integer managerId, Float exitLoad, Double AUM, Double minInvestAmt, Integer fundCompanyID) {
         this.fundAvailableId = fundAvailableId;
         this.fundName = fundName;
         this.fundTypeId = fundTypeId;
@@ -23,7 +23,7 @@ public class FundAvailable {
         this.navValue = navValue;
         this.managerId = managerId;
         this.exitLoad = exitLoad;
-        this.assetUnderManagement = assetUnderManagement;
+        this.AUM = AUM;
         this.minInvestAmt = minInvestAmt;
         this.fundCompanyID = fundCompanyID;
     }
@@ -84,12 +84,12 @@ public class FundAvailable {
         this.exitLoad = exitLoad;
     }
 
-    public Double getAssetUnderManagement() {
-        return assetUnderManagement;
+    public Double getAUM() {
+        return AUM;
     }
 
-    public void setAssetUnderManagement(Double assetUnderManagement) {
-        this.assetUnderManagement = assetUnderManagement;
+    public void setAUM(Double AUM) {
+        this.AUM = AUM;
     }
 
     public Double getMinInvestAmt() {
@@ -118,7 +118,7 @@ public class FundAvailable {
                 ", navValue=" + navValue +
                 ", managerId=" + managerId +
                 ", exitLoad=" + exitLoad +
-                ", assetUnderManagement=" + assetUnderManagement +
+                ", assetUnderManagement=" + AUM +
                 ", minInvestAmt=" + minInvestAmt +
                 ", fundCompanyID=" + fundCompanyID +
                 '}';

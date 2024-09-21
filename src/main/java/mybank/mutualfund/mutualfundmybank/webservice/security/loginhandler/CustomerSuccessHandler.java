@@ -29,7 +29,7 @@ public class CustomerSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
                 logger.warn("updating the attempts.");
                 service.updateAttempts(customer);
             }
-            super.setDefaultTargetUrl("/ui/dash");
+            super.setDefaultTargetUrl("/fund/fundAvailable");
 
         } else {
             logger.warn("Max Attempts reached, account is suspended. Contact admin !!");

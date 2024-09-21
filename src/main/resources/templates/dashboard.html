@@ -18,7 +18,7 @@
 <div th:fragment="dashboard">
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #ffffff;">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex justify-content-start align-items-start" th:href="@{'/ui/dash'}">
+            <a class="navbar-brand d-flex justify-content-start align-items-start" th:href="@{/fund/fundAvailable}">
                 <img class="p-0" th:src="@{'/images/logo.png'}" alt="My Bank Logo" style="width: 60px; height: 60px;"/>
                 <span style="color: #182052; font-family: 'Montserrat', sans-serif;">MyBank</span>
             </a>
@@ -46,7 +46,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item pl-4">
-                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" href="#" id="accountsDropdownToggle">
+                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdownToggle" th:href="@{/fund/fundAvailable}">
                             <i class="bi bi-house-door-fill" style="font-size: 18px;"></i> Home
                         </a>
                     </li>
@@ -58,7 +58,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" href="#" id="profileUpdateDropdown">
+                        <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" th:href="@{'/ui/account'}" id="profileUpdateDropdown">
                             <i class="bi bi-person-check-fill" style="font-size: 18px;"></i> Profile Update
                         </a>
                     </li>
@@ -72,6 +72,13 @@
             </div>
         </div>
     </nav>
+    <div class="container-fluid">
+        <div class="row justify-content-between">
+            <div class="col-auto">
+                <a href="javascript:void(0)" onclick="window.history.back()" class="text-light mt-3 "><i class="bi bi-arrow-left-circle-fill btn btn-primary mt-3" style=" font-size: 24px;border-radius: 50px;padding: 3px;background-color: #182052;"></i></a>
+            </div>
+        </div>
+    </div>
 </div>
 <!--<div th:replace="footer :: footer">-->
 </body>
