@@ -1,38 +1,49 @@
 package mybank.mutualfund.mutualfundmybank.dao.entity;
 
-public class FundCompany {
-    private Integer fundTypeId;
-    private String fundTypeName;
-
-    public FundCompany(Integer fundTypeId, String fundTypeName) {
-        this.fundTypeId = fundTypeId;
-        this.fundTypeName = fundTypeName;
-    }
+public class FundCompany extends FundManager {
+    private Integer fundCompanyId;
+    private String fundCompanyName;
+    private Integer managerId;
 
     public FundCompany() {
     }
 
-    public Integer getFundTypeId() {
-        return fundTypeId;
+    public FundCompany(Integer fundCompanyId, String fundCompanyName, Integer managerId) {
+        this.fundCompanyId = fundCompanyId;
+        this.fundCompanyName = fundCompanyName;
+        this.managerId = managerId;
     }
 
-    public void setFundTypeId(Integer fundTypeId) {
-        this.fundTypeId = fundTypeId;
+    public FundCompany(Integer managerId, String firstName, String lastName, Integer fundCompanyID, Integer fundCompanyId, String fundCompanyName, Integer managerId1) {
+        super(managerId, firstName, lastName, fundCompanyID);
+        this.fundCompanyId = fundCompanyId;
+        this.fundCompanyName = fundCompanyName;
+        this.managerId = managerId1;
     }
 
-    public String getFundTypeName() {
-        return fundTypeName;
+    public Integer getFundCompanyId() {
+        return fundCompanyId;
     }
 
-    public void setFundTypeName(String fundTypeName) {
-        this.fundTypeName = fundTypeName;
+    public void setFundCompanyId(Integer fundCompanyId) {
+        this.fundCompanyId = fundCompanyId;
+    }
+
+    public String getFundCompanyName() {
+        return fundCompanyName;
+    }
+
+    public void setFundCompanyName(String fundCompanyName) {
+        this.fundCompanyName = fundCompanyName;
     }
 
     @Override
-    public String toString() {
-        return "FundCompany{" +
-                "fundTypeId=" + fundTypeId +
-                ", fundTypeName='" + fundTypeName + '\'' +
-                '}';
+    public Integer getManagerId() {
+        return managerId;
+    }
+
+    @Override
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
     }
 }

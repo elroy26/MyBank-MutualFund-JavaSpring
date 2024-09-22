@@ -1,6 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.dao.entity;
 
-public class FundAvailable {
+public class FundAvailable extends FundCompany {
     private Integer fundAvailableId;
     private String fundName;
     private Integer fundTypeId;

@@ -23,28 +23,23 @@
   <script th:src="@{'/js/dashboard.js'}"></script>
   <style>
     /* Custom Styles for Cards */
-    .card-custom {
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
+    .card{
+      overflow: hidden;
     }
-
     .card:hover {
+      border-color: rgba(188, 196, 244, 0.65);
       transition: 0.3s;
       transform: scale(1.1);
     }
 
-    .card-header-custom {
+    .card-header {
       background-color: #182052; /* Dark Blue */
       color: #ffffff;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Shadow directly below the header */
+      overflow: hidden;
     }
 
-    .card-body-custom {
-      background-color: rgb(235, 237, 248);
+    .card-body {
+      background-color: rgb(236, 238, 251);
     }
 
     .btn-apply {
@@ -63,32 +58,55 @@
 <!-- Replace with your dashboard fragment -->
 <div th:replace="dashboard :: dashboard"></div>
 
-<div class="container mt-5">
-  <h2 class="mb-4" style="color: #182052;">Available Mutual Funds</h2>
-
-  <!-- Error Message -->
-  <div th:if="${error}" class="alert alert-danger" role="alert">
-    <span th:text="${error}"></span>
-  </div>
+<div class="container mt-5 ">
+  <h2 class="mb-4 fw-bolder" style="color: #182052;">Available Mutual Funds</h2>
 
   <!-- Mutual Funds Cards -->
-  <div th:if="${fundAvailable}" class="row">
-    <div th:each="fund : ${fundAvailable}" class="col-lg-6 col-md-12 mb-4">
-      <div class="card card-custom">
-        <div class="card-header card-header-custom">
+  <div th:if="${fundAvailable}" class="row ">
+    <div th:each="fund : ${fundAvailable}" class="col-lg-5 col-md-12 m-3 ">
+      <div class="card rounded-4 border-3 shadow-sm" >
+        <div class="card-header rounded-bottom-2  ">
           <h5 th:text="${fund.fundName}">Fund Name</h5>
         </div>
-        <div class="card-body card-body-custom">
-          <p><strong>Expense Ratio:</strong> <span th:text="${fund.expenseRatio}"></span></p>
-          <p><strong>NAV Value:</strong> <span th:text="${fund.navValue}"></span></p>
-          <p><strong>Exit Load:</strong> <span th:text="${fund.exitLoad}"></span></p>
-          <p><strong>Asset Under Management:</strong> <span th:text="${fund.AUM}"></span></p>
-          <p><strong>Minimum Investment Amount:</strong> <span th:text="${fund.minInvestAmt}"></span></p>
+        <div class="card-body ">
+          <p><strong>Current NAV:</strong>
+            <span class="text-success fw-bolder">
+              <i class="bi bi-currency-rupee fst-normal" th:text="${fund.navValue}"></i>
+            </span>
+          </p>
+          <p >
+            <strong >Asset Under Management:</strong>
+            <i class="bi bi-currency-rupee fst-normal" th:text="${fund.AUM}"></i>
+            <span class="fw-bold">Cr.</span>
+          </p>
+          <p>
+            <strong>Minimum Investment Amount:</strong>
+            <i class="bi bi-currency-rupee fst-normal" th:text="${fund.minInvestAmt}"></i>
+          </p>
 
           <!-- Apply Now Button -->
-          <a th:href="@{/fund/apply/{id}(id=${fund.fundAvailableId})}" class="btn btn-apply">
-            <i class="bi bi-arrow-right-circle"></i> Invest
+          <a th:href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
+             class="btn btn-apply"
+             th:data-href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
+              th:data-fund-id="${fund.fundAvailableId}"
+              th:data-fund-name="${fund.fundName}"
+              th:data-fund-type-id="${fund.fundTypeId}"
+              th:data-fund-type-name="${fund.fundTypeName}"
+              th:data-expense-ratio="${fund.expenseRatio}"
+              th:data-nav-value="${fund.navValue}"
+              th:data-manager-id="${fund.managerId}"
+              th:data-manager-first-name="${fund.firstName}"
+              th:data-manager-last-name="${fund.lastName}"
+              th:data-exit-load="${fund.exitLoad}"
+              th:data-aum="${fund.AUM}"
+              th:data-min-invest-amt="${fund.minInvestAmt}"
+              th:data-fund-company-id="${fund.fundCompanyId}"
+              th:data-fund-company-name="${fund.fundCompanyName}"
+              onclick="storeFundDetails(event)">
+              <i class="bi bi-arrow-right-circle"></i> Invest
           </a>
+
+
         </div>
       </div>
     </div>
@@ -99,5 +117,42 @@
     No mutual funds are currently available.
   </div>
 </div>
+
+<script>
+  function storeFundDetails(event) {
+    // Prevent the default link behavior so the storage is done before navigation
+    event.preventDefault();
+
+    // Get the button that was clicked
+    const investButton = event.currentTarget;
+
+    // Create the JSON object with the fund details
+    const fundDetails = {
+      fundAvailableId: investButton.getAttribute("data-fund-id"),
+      fundName: investButton.getAttribute("data-fund-name"),
+      fundTypeId: investButton.getAttribute("data-fund-type-id"),
+      fundTypeName: investButton.getAttribute("data-fund-type-name"),
+      expenseRatio: investButton.getAttribute("data-expense-ratio"),
+      navValue: investButton.getAttribute("data-nav-value"),
+      managerId: investButton.getAttribute("data-manager-id"),
+      managerFirstName: investButton.getAttribute("data-manager-first-name"),
+      managerLastName: investButton.getAttribute("data-manager-last-name"),
+      exitLoad: investButton.getAttribute("data-exit-load"),
+      AUM: investButton.getAttribute("data-aum"),
+      minInvestAmt: investButton.getAttribute("data-min-invest-amt"),
+      fundCompanyId: investButton.getAttribute("data-fund-company-id"),
+      fundCompanyName: investButton.getAttribute("data-fund-company-name")
+    };
+
+    // Store the object in session storage
+    sessionStorage.setItem("selectedFund", JSON.stringify(fundDetails));
+
+    // Redirect to the invest page
+    const fundPageUrl = investButton.getAttribute("data-href"); // Use the stored data-href for redirection
+    window.location.href = fundPageUrl;
+  }
+
+</script>
+
 </body>
 </html>

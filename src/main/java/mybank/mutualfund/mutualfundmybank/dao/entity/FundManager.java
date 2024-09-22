@@ -1,23 +1,12 @@
 package mybank.mutualfund.mutualfundmybank.dao.entity;
 
-public class FundManager {
+public class FundManager extends FundType {
     private Integer managerId;
     private String firstName;
-    private String middleName;
     private String lastName;
     private Integer fundCompanyID;
-    private Integer fundAvailableId;
 
     public FundManager() {
-    }
-
-    public FundManager(Integer managerId, String firstName, String middleName, String lastName, Integer fundCompanyID, Integer fundAvailableId) {
-        this.managerId = managerId;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.fundCompanyID = fundCompanyID;
-        this.fundAvailableId = fundAvailableId;
     }
 
     @Override
@@ -25,10 +14,8 @@ public class FundManager {
         return "FundManager{" +
                 "managerId=" + managerId +
                 ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", fundCompanyID=" + fundCompanyID +
-                ", fundAvailableId=" + fundAvailableId +
                 '}';
     }
 
@@ -48,14 +35,6 @@ public class FundManager {
         this.firstName = firstName;
     }
 
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
     public String getLastName() {
         return lastName;
     }
@@ -72,11 +51,10 @@ public class FundManager {
         this.fundCompanyID = fundCompanyID;
     }
 
-    public Integer getFundAvailableId() {
-        return fundAvailableId;
-    }
-
-    public void setFundAvailableId(Integer fundAvailableId) {
-        this.fundAvailableId = fundAvailableId;
+    public FundManager(Integer managerId, String firstName, String lastName, Integer fundCompanyID) {
+        this.managerId = managerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fundCompanyID = fundCompanyID;
     }
 }

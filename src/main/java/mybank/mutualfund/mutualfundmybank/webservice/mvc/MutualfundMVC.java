@@ -2,7 +2,9 @@ package mybank.mutualfund.mutualfundmybank.webservice.mvc;
 
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerLogin;
+import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
+import mybank.mutualfund.mutualfundmybank.dao.remotes.FundRepository;
 import mybank.mutualfund.mutualfundmybank.dao.services.CustomerDbRepo;
 import mybank.mutualfund.mutualfundmybank.webservice.security.controller.CustomerSignup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -25,6 +28,8 @@ public class MutualfundMVC {
     private Integer customerId;
     @Autowired
     private CustomerRepository repository;
+    @Autowired
+    private FundRepository fundRepository;
 
     @GetMapping("/")
     public String landing() {
@@ -87,6 +92,17 @@ public class MutualfundMVC {
         return "index";
     }
 
-
+    @GetMapping("/apply/{id}")
+    public String applyToFund(@PathVariable("id") Integer fundId, Model model) {
+        // Fetch the fund details if needed
+        try {
+            List<FundAvailable> fund = fundRepository.callAllFundAvailable(); // Implement this method
+            model.addAttribute("fund", fund);
+            return "applyIMutualFund"; // Thymeleaf template for applying
+        } catch (Exception e) {
+            model.addAttribute("error", "Unable to apply to the fund: " + e.getMessage());
+            return "redirect:/fund/fundAvailable?error";
+        }
+    }
 
 }

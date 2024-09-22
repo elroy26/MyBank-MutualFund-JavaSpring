@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply Mutual Fund</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <script th:src="@{'/js/dashboard.js'}"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-top: 50px;
+    }
+    .form-header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+    .form-box {
+      border: 1px solid #ff9800;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #ffecb3;
+      margin-top: 20px;
+    }
+    .btn-buy {
+      background-color: #ff9800;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="dashboard :: dashboard"></div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="form-container">
+        <div class="form-header">
+          <h4>Invest in Mutual Fund</h4>
+        </div>
+        <form>
+          <div class="form-group mt-4">
+            <label for="investAmount">Investment Amount</label>
+            <input type="number" class="form-control" id="investAmount" placeholder="Enter amount to invest" required>
+          </div>
+
+          <div class="form-box">
+            <h5>Fund Details</h5>
+            <p>Fund Name: <span id="fundName"></span></p>
+            <p>Minimum Investment: <span id="fundMinInvestment"></span></p>
+            <p>Risk Level: <span id="fundRisk"></span></p>
+
+            <canvas id="riskGauge" width="300" height="150"></canvas>
+          </div>
+
+          <button type="submit" class="btn btn-buy btn-block mt-4">Buy</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gaugeJS@1.3.8/dist/gauge.min.js"></script>
+<script>
+  window.onload = function() {
+    const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
+
+    // Check if session storage contains the values
+    if (fundData) {
+      // Populate the form fields with these values
+      document.getElementById('fundName').textContent = fundData.fundName;
+      document.getElementById('fundMinInvestment').textContent = `₹${fundData.minInvestAmt}`;
+
+      // Risk mapping based on fund type
+      const riskMapping = {
+        "Large-Cap": "Low",
+        "Mid-Cap": "Medium to High",
+        "Small-Cap": "High",
+        "Large & Mid cap": "Medium",
+        "Multi-Cap": "Medium to High",
+        "Focused": "High",
+        "Sector": "High",
+        "Value or Contra": "Medium to High",
+        "ELSS": "Medium to High",
+        "Flexi Cap": "Medium"
+      };
+
+      const riskLevels = {
+        "Low": 10,
+        "Medium": 50,
+        "High": 90,
+        "Medium to High": 65,
+        "Low to Medium": 30
+      };
+
+      const fundType = fundData.fundTypeName;
+      if (fundType in riskMapping) {
+        const riskLevel = riskMapping[fundType];
+        document.getElementById('fundRisk').textContent = riskLevel;
+
+        // Initialize Gauge.js
+        var opts = {
+          angle: 0, // The span of the gauge arc
+          lineWidth: 0.28, // The line thickness
+          radiusScale: 0.8, // Relative radius
+          pointer: {
+            length: 0.6, // Relative to gauge radius
+            strokeWidth: 0.035, // The thickness
+            color: '#000000' // Pointer color
+          },
+          limitMax: false,     // If false, max value increases automatically if value > maxValue
+          limitMin: false,     // If true, the min value of the gauge will be fixed
+          strokeColor: '#E0E0E0',  // Background color of the gauge
+          generateGradient: true, // Enable gradient
+          highDpiSupport: true,     // High resolution support
+
+          // Gradient based on risk level
+          staticZones: [
+            { strokeStyle: "#00FF00", min: 0, max: 25 },   // Green for low risk
+            { strokeStyle: "#FFFF00", min: 25, max: 50 },  // Yellow for medium risk
+            { strokeStyle: "#FFA500", min: 50, max: 75 },  // Orange for medium to high risk
+            { strokeStyle: "#FF0000", min: 75, max: 100 }  // Red for high risk
+          ]
+        };
+
+        var target = document.getElementById('riskGauge'); // Canvas element
+        var gauge = new Gauge(target).setOptions(opts); // Create gauge
+        gauge.maxValue = 100; // Set max gauge value
+        gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+        gauge.animationSpeed = 32; // Set animation speed (32 is default)
+        gauge.set(riskLevels[riskLevel] || 0); // Set risk level based on the selected fund type
+      }
+    }
+  };
+</script>
+
+</body>
+</html>
