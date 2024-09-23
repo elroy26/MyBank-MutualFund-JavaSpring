@@ -21,6 +21,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <link rel="stylesheet" th:href="@{/styles/styles.css}">
   <script th:src="@{'/js/dashboard.js'}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gaugeJS@1.3.8/dist/gauge.min.js"></script>
+
 
   <style>
     body {
@@ -35,7 +37,9 @@
       margin-top: 50px;
     }
     .form-header {
-      background-color: #007bff;
+      background-color: #182052;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700; /* You can change the weight to your preference */
       color: white;
       padding: 15px;
       border-radius: 8px 8px 0 0;
@@ -52,30 +56,125 @@
       background-color: #ff9800;
       color: white;
     }
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #fundName {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bolder; /* This makes it bold */
+      font-size: 24px;   /* You can adjust the size as needed */
+      color: #ffffff;    /* Adjust color if needed */
+    }
+
+
   </style>
 </head>
 <body>
 <div th:replace="dashboard :: dashboard"></div>
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <h2 class="mb-4 fw-bolder" style="color: #182052;">Fund Details</h2>
+    <div class="col-md-12">
       <div class="form-container">
-        <div class="form-header">
-          <h4>Invest in Mutual Fund</h4>
+        <div class="form-header fw-bolder fs-poppins" style="background-color: #182052">
+          <h4><span id="fundName"></span></h4>
         </div>
         <form>
+          <div class="form-row">
+          <!-- Transparent box for CURRENT NAV -->
+            <div class="form-group col-md-4 ">
+              <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
+                <!-- Icon on the left -->
+                <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+
+                <!-- Text next to the icon -->
+                <div>
+                  <label for="navValue" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">CURRENT NAV:</label><br>
+                  <span id="navValue" class="text-success ps-2" style="font-size: 22px; color: #182052;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-8">
+              <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
+                <!-- Icon on the left -->
+                <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+
+                <!-- Text next to the icon -->
+                <div>
+                  <label for="cagrValue"  class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">CAGR:</label><br>
+                  <span id="cagrValue" class="text-success ps-2" style="font-size: 22px; color: #182052;"></span>
+                </div>
+              </div>
+            </div>
+        </div>
+
+          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
+            <!-- First Row -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-cash-coin ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="fundMinInvestment" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Min. investment:</label><br>
+                    <span id="fundMinInvestment" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-buildings ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="aum" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">AUM:</label><br>
+                    <span id="aum" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Second Row -->
+            <div class="form-row mt-3">
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-boxes ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="exitLoad" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Exit load:</label><br>
+                    <span id="exitLoad" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="expenseRatio" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Expense ratio:</label><br>
+                    <span id="expenseRatio" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <canvas id="riskGauge" style="width: 100%; height: 200px; max-width: 300px;"></canvas>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="managerName" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Fund manager:</label><br>
+                    <span id="managerName" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group mt-4">
             <label for="investAmount">Investment Amount</label>
             <input type="number" class="form-control" id="investAmount" placeholder="Enter amount to invest" required>
-          </div>
-
-          <div class="form-box">
-            <h5>Fund Details</h5>
-            <p>Fund Name: <span id="fundName"></span></p>
-            <p>Minimum Investment: <span id="fundMinInvestment"></span></p>
-            <p>Risk Level: <span id="fundRisk"></span></p>
-
-            <canvas id="riskGauge" width="300" height="150"></canvas>
           </div>
 
           <button type="submit" class="btn btn-buy btn-block mt-4">Buy</button>
@@ -85,16 +184,20 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/gaugeJS@1.3.8/dist/gauge.min.js"></script>
 <script>
-  window.onload = function() {
+  $(document).ready(function() {
     const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
 
     // Check if session storage contains the values
     if (fundData) {
       // Populate the form fields with these values
-      document.getElementById('fundName').textContent = fundData.fundName;
-      document.getElementById('fundMinInvestment').textContent = `₹${fundData.minInvestAmt}`;
+      $('#fundName').text(fundData.fundName);
+      $('#navValue').text(`₹${fundData.navValue}`);
+      $('#managerName').text(`${fundData.managerFirstName} ${fundData.managerLastName}`);
+      $('#fundMinInvestment').text(`₹${fundData.minInvestAmt}`);
+      $('#aum').text(`₹${fundData.AUM} Cr.`);
+      $('#exitLoad').text(`${fundData.exitLoad}%`);
+      $('#expenseRatio').text(`${fundData.expenseRatio}%`);
 
       // Risk mapping based on fund type
       const riskMapping = {
@@ -121,42 +224,40 @@
       const fundType = fundData.fundTypeName;
       if (fundType in riskMapping) {
         const riskLevel = riskMapping[fundType];
-        document.getElementById('fundRisk').textContent = riskLevel;
+        $('#fundRisk').text(riskLevel);
 
         // Initialize Gauge.js
         var opts = {
-          angle: 0, // The span of the gauge arc
-          lineWidth: 0.28, // The line thickness
-          radiusScale: 0.8, // Relative radius
+          angle: 0,
+          lineWidth: 0.28,
+          radiusScale: 0.8,
           pointer: {
-            length: 0.6, // Relative to gauge radius
-            strokeWidth: 0.035, // The thickness
-            color: '#000000' // Pointer color
+            length: 0.6,
+            strokeWidth: 0.035,
+            color: '#000000'
           },
-          limitMax: false,     // If false, max value increases automatically if value > maxValue
-          limitMin: false,     // If true, the min value of the gauge will be fixed
-          strokeColor: '#E0E0E0',  // Background color of the gauge
-          generateGradient: true, // Enable gradient
-          highDpiSupport: true,     // High resolution support
-
-          // Gradient based on risk level
+          limitMax: false,
+          limitMin: false,
+          strokeColor: '#E0E0E0',
+          generateGradient: true,
+          highDpiSupport: true,
           staticZones: [
-            { strokeStyle: "#00FF00", min: 0, max: 25 },   // Green for low risk
-            { strokeStyle: "#FFFF00", min: 25, max: 50 },  // Yellow for medium risk
-            { strokeStyle: "#FFA500", min: 50, max: 75 },  // Orange for medium to high risk
-            { strokeStyle: "#FF0000", min: 75, max: 100 }  // Red for high risk
+            { strokeStyle: "#00FF00", min: 0, max: 25 },
+            { strokeStyle: "#FFFF00", min: 25, max: 50 },
+            { strokeStyle: "#FFA500", min: 50, max: 75 },
+            { strokeStyle: "#FF0000", min: 75, max: 100 }
           ]
         };
 
-        var target = document.getElementById('riskGauge'); // Canvas element
-        var gauge = new Gauge(target).setOptions(opts); // Create gauge
-        gauge.maxValue = 100; // Set max gauge value
-        gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-        gauge.animationSpeed = 32; // Set animation speed (32 is default)
-        gauge.set(riskLevels[riskLevel] || 0); // Set risk level based on the selected fund type
+        var target = $('#riskGauge')[0]; // Get the canvas element
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.maxValue = 100;
+        gauge.setMinValue(0);
+        gauge.animationSpeed = 92;
+        gauge.set(riskLevels[riskLevel] || 0);
       }
     }
-  };
+  });
 </script>
 
 </body>
