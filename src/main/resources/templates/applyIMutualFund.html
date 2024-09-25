@@ -55,6 +55,12 @@
     .btn-buy {
       background-color: #ff9800;
       color: white;
+      font-weight: bold;
+    }
+    .btn-buy:hover {
+      background-color: rgb(244, 102, 39);
+      color: white;
+      font-weight: bold;
     }
     body {
       font-family: 'Poppins', sans-serif;
@@ -66,7 +72,14 @@
       font-size: 24px;   /* You can adjust the size as needed */
       color: #ffffff;    /* Adjust color if needed */
     }
-
+    /*input[type=number] {*/
+    /*  -moz-appearance: textfield; !* Firefox *!*/
+    /*}*/
+    /*input[type=number]::-webkit-inner-spin-button,*/
+    /*input[type=number]::-webkit-outer-spin-button {*/
+    /*  -webkit-appearance: none; !* Chrome, Safari *!*/
+    /*  margin: 0;*/
+    /*}*/
 
   </style>
 </head>
@@ -74,16 +87,16 @@
 <div th:replace="dashboard :: dashboard"></div>
 <div class="container">
   <div class="row justify-content-center">
-    <h2 class="mb-4 fw-bolder" style="color: #182052;">Fund Details</h2>
+    <h2 class=" fw-bolder" style="color: #182052;">Fund Details</h2>
     <div class="col-md-12">
-      <div class="form-container">
+      <div class="form-container ">
         <div class="form-header fw-bolder fs-poppins" style="background-color: #182052">
           <h4><span id="fundName"></span></h4>
         </div>
         <form>
           <div class="form-row">
           <!-- Transparent box for CURRENT NAV -->
-            <div class="form-group col-md-4 ">
+            <div class="form-group col-md-5 ">
               <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
                 <!-- Icon on the left -->
                 <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
@@ -95,19 +108,36 @@
                 </div>
               </div>
             </div>
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-7">
               <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
                 <!-- Icon on the left -->
                 <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
 
                 <!-- Text next to the icon -->
                 <div>
-                  <label for="cagrValue"  class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">CAGR:</label><br>
+                  <label for="cagrValue" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">
+                    CAGR:
+                  </label><br>
                   <span id="cagrValue" class="text-success ps-2" style="font-size: 22px; color: #182052;"></span>
+                </div>
+
+                <!-- Dropdown Button for Selecting Year -->
+                <div class="ms-auto dropdown">
+                  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Year 1
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="yearDropdown">
+                    <li><a class="dropdown-item" href="#" data-year="1">1 Year</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="2">2 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="3">3 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="4">4 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="5">5 Years</a></li>
+                  </ul>
                 </div>
               </div>
             </div>
-        </div>
+
+          </div>
 
           <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
             <!-- First Row -->
@@ -157,11 +187,16 @@
 
           <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
             <div class="form-row">
-              <div class="form-group">
-                <canvas id="riskGauge" style="width: 100%; height: 200px; max-width: 300px;"></canvas>
+              <div class="form-group col-md-6 d-flex align-items-center">
+                <canvas id="riskGauge" style="width: 100%; height: auto; max-width: 200px;"></canvas>
+                <!-- Label for risk level to the right of the gauge -->
+                <div class="ms-3">
+                  <label for="fundRisk" class="fw-bold" style="font-size: 16px; color: rgba(24,32,82,0.67);">Risk involved:</label><br>
+                  <span id="fundRisk" style="font-size: 22px; color: #182052;"></span>
+                </div>
               </div>
               <div class="form-group col-md-6 ">
-                <div class="d-flex align-items-center ps-5">
+                <div class="d-flex align-items-center ps-5 pt-3">
                   <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
                   <div>
                     <label for="managerName" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Fund manager:</label><br>
@@ -171,33 +206,139 @@
               </div>
             </div>
           </div>
-
-          <div class="form-group mt-4">
-            <label for="investAmount">Investment Amount</label>
-            <input type="number" class="form-control" id="investAmount" placeholder="Enter amount to invest" required>
+          <div class="text-center">
+            <button type="button" class="btn btn-buy btn-block mt-5 mb-3 col-3 mx-auto rounded-4" data-bs-toggle="modal" data-bs-target="#buyModal">Buy</button>
           </div>
-
-          <button type="submit" class="btn btn-buy btn-block mt-4">Buy</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="bi bi-bank2 pe-4 " style="font-size: 34px; color: #182052;"></i>
+        <div>
+          <h5 class="modal-title fw-bolder" id="buyModalLabel" style="color: #182052;"><span id="modalFundName"></span></h5>
+          <p class="mb-0" style="color: rgba(24,32,82,0.67); font-family: 'Poppins', sans-serif">Growth . Equity . <span id="modalFundType"></span></p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color: #182052">
 
+        <!-- Payment Method Selection -->
+        <label  class="form-label">Payment Method:</label><br>
+        <div class="form-group d-flex justify-content-around ">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="UPI" checked>
+            <label class="form-check-label" for="upi">UPI</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="netBanking" value="NetBanking">
+            <label class="form-check-label" for="netBanking">Net banking</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="neftRtgs" value="NEFT/RTGS">
+            <label class="form-check-label" for="neftRtgs">NEFT / RTGS</label>
+          </div>
+        </div>
+
+        <!-- Investment Amount Input -->
+        <div class="form-group mt-3">
+          <label for="investmentAmount" class="form-label">Investment Amount:</label>
+          <div class="input-group">
+            <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount">
+            <span id="incrementText" class="input-group-text text-primary bg-light" style="cursor: pointer;"></span>
+          </div>
+          <div id="error-message" class="text-danger" style="display: none;"></div>
+        </div>
+
+
+      </div>
+      <div class="modal-footer justify-content-center ">
+          <button type="button" class="btn btn-primary col-4 rounded-4">Buy now</button>
+
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   $(document).ready(function() {
     const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
+    const $investmentAmountInput = $('#investmentAmount');
+    const $errorMessage = $('#error-message');
+    const $incrementText = $('#incrementText');
+
+
+    // Update minimum investment based on selected fund
+    function updateMinInvestment() {
+      const minInvestmentAmount = fundData.minInvestAmt || 1000; // Default to 1000 if not set
+      $investmentAmountInput.val(minInvestmentAmount);
+      $incrementText.text(`+${minInvestmentAmount}`); // Set clickable text
+    }
+
+    // Initialize the page with the correct minimum investment
+    updateMinInvestment();
+
+    // Increment text click functionality
+    $incrementText.on('click', function () {
+      const minInvestmentAmount = parseFloat(fundData.minInvestAmt) || 1000; // Default to 1000 if not set
+      let currentValue = parseFloat($investmentAmountInput.val()) || 0; // Use parseFloat to handle numbers properly
+      const newValue = currentValue + minInvestmentAmount; // Increment the value by the minimum investment amount
+      $investmentAmountInput.val(newValue); // Set the new incremented value
+    });
+
+    // Validate on blur
+    $investmentAmountInput.on('blur', function () {
+      validateInvestment();
+    });
+
+    // Validate on form submit
+    $('#investmentForm').on('submit', function (e) {
+      if (!validateInvestment()) {
+        e.preventDefault(); // Prevent form submission if validation fails
+      }
+    });
+
+    // Validation function
+    function validateInvestment() {
+      const minInvestmentAmount = fundData.minInvestAmt || 1000; // Default to 1000 if not set
+      const value = $investmentAmountInput.val(); // Get the raw input value as a string
+
+      if (value === '' || value === null) { // Check if the input box is empty
+        $errorMessage.text("Value cannot be empty.");
+        $errorMessage.show();
+        return false;
+      }
+
+      const numericValue = parseFloat(value); // Convert the value to a number
+
+      if (isNaN(numericValue) || numericValue < minInvestmentAmount) { // Check if it's a valid number and meets the minimum amount
+        $errorMessage.text(`Value must be a valid number and greater than or equal to ₹${minInvestmentAmount}.`);
+        $errorMessage.show();
+        return false;
+      }
+
+      // Hide error if everything is valid
+      $errorMessage.hide();
+      return true;
+    }
 
     // Check if session storage contains the values
     if (fundData) {
       // Populate the form fields with these values
       $('#fundName').text(fundData.fundName);
+      $('#modalFundName').text(fundData.fundName);
+      $('#modalFundType').text(fundData.fundTypeName);
       $('#navValue').text(`₹${fundData.navValue}`);
       $('#managerName').text(`${fundData.managerFirstName} ${fundData.managerLastName}`);
       $('#fundMinInvestment').text(`₹${fundData.minInvestAmt}`);
       $('#aum').text(`₹${fundData.AUM} Cr.`);
       $('#exitLoad').text(`${fundData.exitLoad}%`);
       $('#expenseRatio').text(`${fundData.expenseRatio}%`);
+
 
       // Risk mapping based on fund type
       const riskMapping = {
@@ -253,10 +394,38 @@
         var gauge = new Gauge(target).setOptions(opts);
         gauge.maxValue = 100;
         gauge.setMinValue(0);
-        gauge.animationSpeed = 92;
+        gauge.animationSpeed = 42;
         gauge.set(riskLevels[riskLevel] || 0);
       }
     }
+    const endNavValue = parseFloat(fundData.navValue); // Current NAV value from your database
+    const startNavValue = 50; // Default start NAV value you want to use
+
+    // Function to calculate CAGR
+    function calculateCAGR(startValue, endValue, years) {
+      return ((endValue / startValue) ** (1 / years) - 1) * 100; // Result in percentage
+    }
+
+    // Calculating CAGR values for each year using the fixed startNavValue
+    let cagrValues = {};
+    for (let i = 1; i <= 5; i++) {
+      cagrValues[i] = calculateCAGR(startNavValue, endNavValue, i).toFixed(2) + '%';
+    }
+
+    // Function to update the CAGR display
+    function updateCagrDisplay(year) {
+      $('#cagrValue').text(cagrValues[year]); // Update the CAGR value in the span
+      $('#yearDropdown').text(`Year ${year}`); // Update dropdown button text
+    }
+
+    // Set default view to 1-year CAGR
+    updateCagrDisplay(1);
+
+    // Handle Dropdown Selection and Display the Corresponding CAGR
+    $('.dropdown-item').on('click', function() {
+      let selectedYear = $(this).data('year'); // Get the selected year from data attribute
+      updateCagrDisplay(selectedYear); // Update display based on selected year
+    });
   });
 </script>
 

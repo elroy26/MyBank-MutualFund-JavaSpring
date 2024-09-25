@@ -79,7 +79,7 @@
         <div id="phone-alert" class="alert alert-danger d-none" role="alert">
           <!-- Phone alert message will be dynamically set here -->
         </div>
-        <form name = "application" th:action="@{'/account/update'}" method="post">
+        <form name = "application" th:action="@{'/account/update'}" method="post" onsubmit="return validateForm()">
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="firstName">FIRST NAME:</label>
@@ -245,12 +245,13 @@
 
 
 <script>
-  var passwordField = document.getElementById("password");
-  var confirmPasswordField = document.getElementById("confirmPassword");
-  var errorMessage = document.getElementById("error-message");
-  var passwordStrengthMessage = document.getElementById("password-strength-message");
-  var isValidUsername, isValidEmail, isValidPhoneNumber, isValidCurrentPassword, isValidNewPassword, isValidConfirmPassword;
 
+  let isValidUsername = false;
+  let isValidEmail = false;
+  let isValidPhoneNumber = false;
+  let isValidCurrentPassword = false;
+  let isValidConfirmPassword = false;
+  let isValidNewPassword = false;
   $(document).ready(function () {
     // Function to toggle password visibility
     function togglePasswordVisibility(inputId, buttonId) {
@@ -582,10 +583,25 @@
     await checkPhoneNumber();
     await checkCurrentPassword();
     await checkNewPassword();
-    await checkConfirmPassword();
+     checkConfirmPassword();
 
-    return isValidUsername && isValidEmail && isValidPhoneNumber && isValidCurrentPassword && isValidConfirmPassword && isValidNewPassword;
+    const isValid = isValidUsername && isValidEmail && isValidPhoneNumber && isValidCurrentPassword && isValidConfirmPassword && isValidNewPassword;
+
+    // Get the Update Profile button
+    const updateProfileButton = document.getElementById('add');
+
+    if (!isValid) {
+      // Disable the Update Profile button
+      updateProfileButton.disabled = true;
+      return false; // Block form submission if any check fails
+    } else {
+      // Enable the Update Profile button if all checks pass
+      updateProfileButton.disabled = false;
+    }
+
+    return true;
   }
+
 </script>
 </body>
 </html>

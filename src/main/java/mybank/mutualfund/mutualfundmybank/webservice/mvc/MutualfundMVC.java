@@ -26,6 +26,7 @@ import java.util.Map;
 public class MutualfundMVC {
     private String  name;
     private Integer customerId;
+    private Integer accountId;
     @Autowired
     private CustomerRepository repository;
     @Autowired
@@ -49,6 +50,7 @@ public class MutualfundMVC {
     @GetMapping("/account")
     public String profile(Model model) {
         CustomerAccount customer = repository.findByCustomerId(customerId);
+        accountId = customer.getAccountId();
         System.out.println(customer);
         model.addAttribute("customer", customer);
         return "profile";
