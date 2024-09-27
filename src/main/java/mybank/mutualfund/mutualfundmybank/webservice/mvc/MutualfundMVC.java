@@ -3,6 +3,7 @@ package mybank.mutualfund.mutualfundmybank.webservice.mvc;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerLogin;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
+import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.FundRepository;
 import mybank.mutualfund.mutualfundmybank.dao.services.CustomerDbRepo;
@@ -17,9 +18,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 @Controller
 @RequestMapping("/ui")
@@ -105,6 +110,43 @@ public class MutualfundMVC {
             model.addAttribute("error", "Unable to apply to the fund: " + e.getMessage());
             return "redirect:/fund/fundAvailable?error";
         }
+    }
+    @PostMapping("/applyFund")
+    public String saveAppliedFund(Model model,
+                                  @RequestParam Integer fundAvailableId,
+                                  @RequestParam String startDate,
+                                  @RequestParam Double amtInvested,
+                                  @RequestParam Double navValue
+    ) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateFormat.parse(startDate); // Convert String to Date
+
+            // Create a GregorianCalendar object
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            gregorianCalendar.setTime(parsedDate); // Set the Date
+
+            // Convert the Date to java.sql.Date
+            java.sql.Date sqlStartDate = new java.sql.Date(gregorianCalendar.getTimeInMillis());
+
+            FundAvailed availed = new FundAvailed();
+            Double units=amtInvested/navValue;
+
+            availed.setFundAvailableId(fundAvailableId);
+            availed.setAccountId(accountId);
+            availed.setStartDate(sqlStartDate);
+            availed.setAmtInvested(amtInvested);
+            availed.setUnits(units);
+            availed.setFundStatus(0);
+
+            String fundAvailed = fundRepository.callSaveFundAvailed(availed);
+            model.addAttribute("fundAvailed", fundAvailed);  // Add the funds to the model
+        } catch (SQLException e) {
+            model.addAttribute("error", "Error buying funds: " + e.getMessage());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return "fundAvailed";
     }
 
 }

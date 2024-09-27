@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface FundRepository {
     List<FundAvailable> callAllFundAvailable() throws SQLException;
-    FundAvailed callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException;
+    String callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException;
 
 }

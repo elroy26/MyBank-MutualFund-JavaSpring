@@ -9,7 +9,7 @@ public class FundAvailed extends FundAvailable {
     private Double amtInvested;
     private Date startDate;
     private Date endDate;
-    private Integer units;
+    private Double units;
     private Integer fundStatus;
 
     public FundAvailed() {
@@ -77,11 +77,11 @@ public class FundAvailed extends FundAvailable {
         this.endDate = endDate;
     }
 
-    public Integer getUnits() {
+    public Double getUnits() {
         return units;
     }
 
-    public void setUnits(Integer units) {
+    public void setUnits(Double units) {
         this.units = units;
     }
 
@@ -93,7 +93,7 @@ public class FundAvailed extends FundAvailable {
         this.fundStatus = fundStatus;
     }
 
-    public FundAvailed(Integer fundAvailedId, Integer fundAvailableId, Integer accountId, Double amtInvested, Date startDate, Date endDate, Integer units, Integer fundStatus) {
+    public FundAvailed(Integer fundAvailedId, Integer fundAvailableId, Integer accountId, Double amtInvested, Date startDate, Date endDate, Double units, Integer fundStatus) {
         this.fundAvailedId = fundAvailedId;
         this.fundAvailableId = fundAvailableId;
         this.accountId = accountId;

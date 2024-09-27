@@ -62,7 +62,7 @@ public class FundDbRepo implements FundRepository {
     }
 
     @Override
-    public FundAvailed callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException {
+    public String callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException {
         String sql = "{call insert_fund_availed(?, ?, ?, ?, ?, ?)}";
         LOGGER.info("Insert fund availed: {}", availed);
         try {
@@ -75,7 +75,7 @@ public class FundDbRepo implements FundRepository {
                     availed.getFundStatus()
             );
             LOGGER.info("Save fund availed: {}", availed);
-            return availed; // Optionally return the saved object
+            return "You have successfully bought the fund"; // Optionally return the saved object
         } catch (DataAccessException e) {
             LOGGER.error(e.getMessage());
             Throwable cause = e.getCause();
