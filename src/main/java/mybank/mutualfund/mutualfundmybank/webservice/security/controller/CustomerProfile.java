@@ -5,9 +5,11 @@ import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,17 +28,18 @@ public class CustomerProfile {
 
 
     @PostMapping("/update")
-    public String updateProfile(@RequestParam String firstName,
-                                @RequestParam(required = false) String middleName,
-                                @RequestParam String lastName,
-                                @RequestParam String address,
-                                @RequestParam String birthDate,
-                                @RequestParam String aadhaarNumber,
-                                @RequestParam String username,
-                                @RequestParam String password,
-                                @RequestParam String phoneNumber,
-                                @RequestParam String email,
-                                Model model) {
+    public ResponseEntity<Object> updateProfile(@RequestParam String firstName,
+                                        @RequestParam(required = false) String middleName,
+                                        @RequestParam String lastName,
+                                        @RequestParam String address,
+                                        @RequestParam String birthDate,
+                                        @RequestParam String aadhaarNumber,
+                                        @RequestParam String username,
+                                        @RequestParam String password,
+                                        @RequestParam String phoneNumber,
+                                        @RequestParam String email,
+                                        RedirectAttributes redirectAttributes
+                               ) {
 
         // Retrieve the customer account from the repository
         CustomerAccount existingAccount = new CustomerAccount();
@@ -65,7 +68,8 @@ public class CustomerProfile {
             existingAccount.setBirthDate(sqlBirthDate);
         } catch (ParseException e) {
             logger.error(e.getMessage());
-            return "Invalid birth date format. Please use 'yyyy-MM-dd'.";
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid birth date format. Please use 'yyyy-MM-dd'.");
+            return ResponseEntity.badRequest().body("Invalid birth date format. Please use 'yyyy-MM-dd'.");
         }
 
 
@@ -80,10 +84,12 @@ public class CustomerProfile {
 
         // Check if the update was successful by verifying the object is not null
         if (account == null) {
-            return "Error: Account update failed. Please try again.";
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: Account update failed. Please try again.");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully.");
         }
-        model.addAttribute("account", account);
-        return account;
+//        model.addAttribute("account", account);
+        return ResponseEntity.ok().body("Account updated successfully"); // Make sure this points to the correct mapping
     }
 
     @GetMapping("/check-password")

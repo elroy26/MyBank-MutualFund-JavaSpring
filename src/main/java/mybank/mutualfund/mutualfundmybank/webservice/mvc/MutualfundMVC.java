@@ -4,11 +4,13 @@ import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerLogin;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;
+import mybank.mutualfund.mutualfundmybank.dao.exceptions.FundException;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.FundRepository;
 import mybank.mutualfund.mutualfundmybank.dao.services.CustomerDbRepo;
 import mybank.mutualfund.mutualfundmybank.webservice.security.controller.CustomerSignup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static java.lang.Double.parseDouble;
@@ -90,6 +94,8 @@ public class MutualfundMVC {
         name = authentication.getName();
         CustomerAccount customer = repository.findByUserName(name);
         customerId = customer.getCustomerId();
+        CustomerAccount customer1 = repository.findByCustomerId(customerId);
+        accountId = customer1.getAccountId();
         return customer.getUsername();
     }
 
@@ -112,41 +118,44 @@ public class MutualfundMVC {
         }
     }
     @PostMapping("/applyFund")
-    public String saveAppliedFund(Model model,
-                                  @RequestParam Integer fundAvailableId,
-                                  @RequestParam String startDate,
-                                  @RequestParam Double amtInvested,
-                                  @RequestParam Double navValue
-    ) {
+    public ResponseEntity<Object> saveAppliedFund(@RequestBody FundAvailed availed) {
+
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(startDate); // Convert String to Date
+            // Calculate the units
+            Double units = availed.getAmtInvested() / availed.getNavValue();
 
-            // Create a GregorianCalendar object
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            gregorianCalendar.setTime(parsedDate); // Set the Date
-
-            // Convert the Date to java.sql.Date
-            java.sql.Date sqlStartDate = new java.sql.Date(gregorianCalendar.getTimeInMillis());
-
-            FundAvailed availed = new FundAvailed();
-            Double units=amtInvested/navValue;
-
-            availed.setFundAvailableId(fundAvailableId);
-            availed.setAccountId(accountId);
-            availed.setStartDate(sqlStartDate);
-            availed.setAmtInvested(amtInvested);
+            // Set necessary fields
+            availed.setAccountId(accountId); // Ensure this is set from session or security context
+            availed.setStartDate(availed.getStartDate());
             availed.setUnits(units);
-            availed.setFundStatus(0);
+            availed.setFundStatus("active"); // Assuming '0' is the status for 'pending' or similar
 
-            String fundAvailed = fundRepository.callSaveFundAvailed(availed);
-            model.addAttribute("fundAvailed", fundAvailed);  // Add the funds to the model
+            // Call the repository to save the fund details
+            String fundAvailedMessage = fundRepository.callSaveFundAvailed(availed);
+
+            // Return success message with HTTP 200
+            return ResponseEntity.ok(fundAvailedMessage);
+
+        } catch (FundException e) {
+            if(e.getMessage().contains("-20001")) {
+                // Return a 400 Bad Request with an error message
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is under 18 years old. Cannot process the fund application.");
+            }else if(e.getMessage().contains("-20002")) {
+                // Return a 400 Bad Request with an error message
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Birth date is missing. Please fill profile details to buy funds.");
+            }else {
+                return ResponseEntity.badRequest().body("Error buying funds: " + e.getMessage());
+            }
+        } catch (DateTimeParseException e) {
+            // Handle date parsing issues
+            return ResponseEntity.badRequest().body("Invalid date format. Please use yyyy-MM-dd.");
+
         } catch (SQLException e) {
-            model.addAttribute("error", "Error buying funds: " + e.getMessage());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            // Handle SQL-related exceptions
+            throw new RuntimeException("Database error: " + e.getMessage());
         }
-        return "fundAvailed";
     }
+
+
 
 }

@@ -60,6 +60,9 @@
     .alert.fade {
       transition: opacity 1.5s linear;
     }
+    #alert {
+      display: none; /* Initially hidden */
+    }
   </style>
 </head>
 <body>
@@ -67,6 +70,9 @@
 
 
 <div class="container">
+  <div id="alert-container">
+    <div id="alert" class="alert d-none" role="alert"></div>
+  </div>
   <div class="d-flex align-items-center mb-2">
     <i class="bi bi-person-circle" style="color: #182052; font-size: 55px;"></i>
     <h2 class="ml-3" style="color: #182052; font-size: 44px; font-weight: 700; font-family: 'Poppins', sans-serif;">My Profile</h2>
@@ -79,7 +85,7 @@
         <div id="phone-alert" class="alert alert-danger d-none" role="alert">
           <!-- Phone alert message will be dynamically set here -->
         </div>
-        <form name = "application" th:action="@{'/account/update'}" method="post" onsubmit="return validateForm()">
+        <form name = "application" th:action="@{'/account/update'}" method="post" id="profileUpdateForm">
           <div class="form-row">
             <div class="form-group col-md-5">
               <label for="firstName">FIRST NAME:</label>
@@ -176,7 +182,7 @@
             </div>
           </div>
           <br>
-          <button id="add" type="submit" class="btn btn-primary">Update Profile</button>
+          <button  type="submit"  class="btn btn-primary">Update Profile</button>
         </form>
       </div>
     </div>
@@ -233,7 +239,7 @@
 
           <div class="modal-footer">
             <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" id="add" class="btn btn-primary" >Save changes</button>
           </div>
         </form>
       </div>
@@ -246,13 +252,39 @@
 
 <script>
 
-  let isValidUsername = false;
-  let isValidEmail = false;
-  let isValidPhoneNumber = false;
-  let isValidCurrentPassword = false;
-  let isValidConfirmPassword = false;
-  let isValidNewPassword = false;
+  const updateProfileButton = document.getElementById('add');
+
   $(document).ready(function () {
+    $("#profileUpdateForm").on("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Collect form data
+      const formData = $(this).serialize();
+
+      // Send AJAX request
+      $.ajax({
+        type: "POST",
+        url: "/account/update", // Adjust this URL as necessary
+        data: formData,
+        success: function(response) {
+          // Handle successful response
+          $("#alert").removeClass("d-none alert-danger").addClass("alert-success");
+          $("#alert").text(response);
+          $("#alert").show();
+          // Optionally, redirect after a delay or based on a condition
+          setTimeout(function() {
+            window.location.href = "/ui/account"; // Adjust the redirect as necessary
+          }, 2000);
+        },
+        error: function(xhr) {
+          // Handle error response
+          const errorMessage = xhr.responseText || "An error occurred. Please try again.";
+          $("#alert").removeClass("d-none alert-success").addClass("alert-danger");
+          $("#alert").text(errorMessage);
+          $("#alert").show();
+        }
+      });
+    });
     // Function to toggle password visibility
     function togglePasswordVisibility(inputId, buttonId) {
       $(buttonId).on('click', function () {
@@ -314,20 +346,20 @@
                     statusSpan.text('This is your current username');
                     statusSpan.removeClass().addClass('text-success'); // Add Bootstrap success class
                     statusIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green check icon
-                    isValidUsername = true;
+                    updateProfileButton.disabled = false;
                   } else {
                     // Username exists and is different from the current one
                     statusSpan.text('Username already taken');
                     statusSpan.removeClass().addClass('text-danger'); // Add Bootstrap danger class
                     statusIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red cross icon
-                    isValidUsername = false;
+                    updateProfileButton.disabled = true;
                   }
                 } else {
                   // Username does not exist
                   statusSpan.text('Username available');
                   statusSpan.removeClass().addClass('text-success'); // Add Bootstrap success class
                   statusIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green check icon
-                  isValidUsername = true;
+                  updateProfileButton.disabled = false;
                 }
                 statusSpan.removeClass('d-none'); // Show the message
                 statusIcon.removeClass('d-none'); // Show the icon
@@ -339,7 +371,7 @@
                 statusIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red cross icon
                 statusSpan.removeClass('d-none'); // Show the message
                 statusIcon.removeClass('d-none');
-                isValidUsername = false;
+                updateProfileButton.disabled = true;
               });
     } else {
       // Hide the status message and icon if username is empty
@@ -362,7 +394,6 @@
       statusIcon.html('').hide(); // Hide the status icon and clear the message
       newPasswordInput.prop("disabled", true); // Disable New Password input
       confirmPasswordInput.prop("disabled", true);
-      isValidCurrentPassword=false// Disable Confirm Password input
       return; // Stop further execution if input is empty
     }
 
@@ -384,14 +415,14 @@
           statusIcon.html('<i class="bi bi-check-circle-fill text-success"></i> ');
           newPasswordInput.prop("disabled", false); // Enable New Password input
           confirmPasswordInput.prop("disabled", true);
-          isValidCurrentPassword=true;// Enable Confirm Password input
+          updateProfileButton.disabled = false;
         } else {
           // If the password does not match, disable the new password fields and show error message
           currentPasswordInput.css("border-color", "red");
           statusIcon.html('<i class="bi bi-x-circle-fill text-danger pe-1"></i> <span class="text-danger">Password is incorrect</span>');
           newPasswordInput.prop("disabled", true); // Disable New Password input
           confirmPasswordInput.prop("disabled", true);
-          isValidCurrentPassword=false;// Disable Confirm Password input
+          updateProfileButton.disabled = true;
         }
       },
       error: function() {
@@ -419,7 +450,7 @@
       newPasswordStatusMessage.html('Password must be at least 8 characters long');
       newPasswordStatusMessage.removeClass('d-none'); // Show the error message
       confirmPasswordInput.prop("disabled", true);
-      isValidNewPassword=false;// Disable Confirm Password input
+      updateProfileButton.disabled = true;
     } else if (newPassword === currentPassword) {
       // If new password matches the current password, show an error message and red icon
       newPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
@@ -427,7 +458,7 @@
       newPasswordStatusMessage.html('New password is the same as the old password');
       newPasswordStatusMessage.removeClass('d-none'); // Show the error message
       confirmPasswordInput.prop("disabled", true);
-      isValidNewPassword=false;// Disable Confirm Password input
+      updateProfileButton.disabled = false;
     } else {
       // If new password is different and has a length of at least 8 characters, show green tick and hide the message
       newPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
@@ -435,7 +466,7 @@
       newPasswordStatusMessage.html(''); // Clear any previous messages
       newPasswordStatusMessage.addClass('d-none'); // Hide the message
       confirmPasswordInput.prop("disabled", false);
-      isValidNewPassword=true;// Enable Confirm Password input
+      updateProfileButton.disabled = false;
     }
   }
 
@@ -455,13 +486,13 @@
       confirmPasswordIcon.html('<i class="bi bi-check-circle-fill text-success"></i>'); // Green tick icon
       $("#confirmPassword").css("border-color", "green"); // Green border
       confirmPasswordStatusMessage.html('').addClass('d-none'); // Clear and hide the error message
-      isValidConfirmPassword=true;
+      updateProfileButton.disabled = false;
     } else {
       // If passwords do not match, show the error message and red 'X' icon
       confirmPasswordIcon.html('<i class="bi bi-x-circle-fill text-danger"></i>'); // Red 'X' icon
       $("#confirmPassword").css("border-color", "red"); // Red border
       confirmPasswordStatusMessage.html('Passwords do not match').removeClass('d-none').show(); // Show the error message
-      isValidConfirmPassword=false;
+      updateProfileButton.disabled = true;
     }
   }
 
@@ -486,21 +517,21 @@
                     statusSpan.classList.remove('text-danger');
                     statusSpan.classList.add('text-warning'); // Add Bootstrap success class
                     statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
-                    isValidEmail = true;
+                    updateProfileButton.disabled = false;
                   } else {
                     // Email exists and is different from the current one
                     statusSpan.textContent = 'Email already Registered by other user';
                     statusSpan.classList.remove('text-success');
                     statusSpan.classList.add('text-danger'); // Add Bootstrap danger class
                     statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
-                    isValidEmail = false;
+                    updateProfileButton.disabled = true;
                   }
                 } else {
                   statusSpan.textContent = '';
                   statusSpan.classList.remove('text-danger');
                   statusSpan.classList.add('text-success'); // Add Bootstrap success class
                   statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
-                  isValidEmail = true;
+                  updateProfileButton.disabled = false;
                 }
                 statusSpan.classList.remove('d-none'); // Show the message
                 statusIcon.classList.remove('d-none');
@@ -513,7 +544,7 @@
                 statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
                 statusSpan.classList.remove('d-none'); // Show the message
                 statusIcon.classList.remove('d-none'); // Show the icon
-                isValidEmail = false;
+                updateProfileButton.disabled = true;
               });
     } else {
       statusSpan.classList.add('d-none'); // Hide the message if email is empty
@@ -541,14 +572,14 @@
                     statusSpan.classList.remove('text-danger', 'text-success');
                     statusSpan.classList.add('text-warning'); // Add Bootstrap info class
                     statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
-                    isValidPhoneNumber = true;
+                    updateProfileButton.disabled = false;
                   } else {
                     // Phone number exists and is different from the current one
                     statusSpan.textContent = 'Phone number already registered by other user';
                     statusSpan.classList.remove('text-info', 'text-success');
                     statusSpan.classList.add('text-danger'); // Add Bootstrap danger class
                     statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
-                    isValidPhoneNumber = false;
+                    updateProfileButton.disabled = true;
                   }
                 } else {
                   // Phone number is available
@@ -556,7 +587,7 @@
                   statusSpan.classList.remove('text-danger', 'text-info');
                   statusSpan.classList.add('text-success'); // Add Bootstrap success class
                   statusIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>'; // Green check icon
-                  isValidPhoneNumber = true;
+                  updateProfileButton.disabled = false;
                 }
                 statusSpan.classList.remove('d-none'); // Show the message
                 statusIcon.classList.remove('d-none');
@@ -568,7 +599,7 @@
                 statusIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>'; // Red cross icon
                 statusSpan.classList.remove('d-none'); // Show the message
                 statusIcon.classList.remove('d-none'); // Show the icon
-                isValidPhoneNumber = false;
+                updateProfileButton.disabled = true;
               });
     } else {
       statusSpan.classList.add('d-none'); // Hide the message if phone number is empty
@@ -577,30 +608,7 @@
     }
   }
 
-  async function validateForm() {
-    await checkUsername();
-    await checkEmail();
-    await checkPhoneNumber();
-    await checkCurrentPassword();
-    await checkNewPassword();
-     checkConfirmPassword();
 
-    const isValid = isValidUsername && isValidEmail && isValidPhoneNumber && isValidCurrentPassword && isValidConfirmPassword && isValidNewPassword;
-
-    // Get the Update Profile button
-    const updateProfileButton = document.getElementById('add');
-
-    if (!isValid) {
-      // Disable the Update Profile button
-      updateProfileButton.disabled = true;
-      return false; // Block form submission if any check fails
-    } else {
-      // Enable the Update Profile button if all checks pass
-      updateProfileButton.disabled = false;
-    }
-
-    return true;
-  }
 
 </script>
 </body>

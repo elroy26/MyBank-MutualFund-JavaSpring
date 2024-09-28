@@ -78,20 +78,17 @@ public class FundDbRepo implements FundRepository {
             return "You have successfully bought the fund"; // Optionally return the saved object
         } catch (DataAccessException e) {
             LOGGER.error(e.getMessage());
-            Throwable cause = e.getCause();
-            if (cause instanceof SQLException sqlEx) {
-                LOGGER.error(sqlEx.getMessage());
                 // Check for specific error code from the trigger
-                if (sqlEx.getErrorCode() == -20001) {
-                    LOGGER.error(sqlEx.getMessage());
-                    throw new FundException("Error: User is under 18 years old.");
-                } else {
-                    LOGGER.error(sqlEx.getMessage());
-                    throw new FundException("Database error occurred: " + sqlEx.getMessage(), sqlEx);
-                }
+            if (e.getMessage().contains("-20001")) {
+                throw new FundException("User is under 18 years old. Cannot apply for funds.");
+            } else if (e.getMessage().contains("-20002")) {
+                throw new FundException("Birth date is missing. Please complete your profile.");
+            } else if (e.getMessage().contains("-20003")) {
+                throw new FundException("Account ID not found.");
+            } else {
+                throw new FundException("Database error occurred: " + e.getMessage());
             }
-            LOGGER.error(e.getMessage());
-            throw new FundException("An unexpected error occurred.", e);
+
         }
     }
 }

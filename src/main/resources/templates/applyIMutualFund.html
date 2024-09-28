@@ -85,17 +85,23 @@
 </head>
 <body>
 <div th:replace="dashboard :: dashboard"></div>
+
 <div class="container">
   <div class="row justify-content-center">
     <h2 class=" fw-bolder" style="color: #182052;">Fund Details</h2>
     <div class="col-md-12">
       <div class="form-container ">
+
+
         <div class="form-header fw-bolder fs-poppins" style="background-color: #182052">
           <h4><span id="fundName"></span></h4>
         </div>
+
         <form name = "application" th:action="@{'/ui/applyFund'}" method="post">
+
           <input type="hidden" id="fundId" th:name="fundAvailableId" value="">
           <input type="hidden" id="startDate" th:name="startDate" value="">
+          <div id="alert-container"></div>
           <div class="form-row">
           <!-- Transparent box for CURRENT NAV -->
             <div class="form-group col-md-5 ">
@@ -269,10 +275,48 @@
 
 <script>
   function setSysDateAndSubmit() {
-    var today = new Date(); // Get current date
-    var date = today.toISOString().split('T')[0]; // Format the date to 'YYYY-MM-DD'
-    $('#startDate').val(date);
-    $('form[name="application"]').submit();  }
+    const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
+    const amtInvested = $('#investmentAmount').val();
+
+    const formData = {
+      fundAvailableId: parseInt(fundData.fundAvailableId), // Convert string to integer
+      amtInvested: amtInvested,
+      navValue: parseFloat(fundData.navValue), // Convert string to double (floating-point number)
+      startDate: new Date().toISOString().split('T')[0] // Current date in 'yyyy-MM-dd' format
+    };
+
+
+    $.ajax({
+      url: '/ui/applyFund',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function(message) {
+        $('#buyModal').modal('hide');
+        // Show Bootstrap success alert
+        $('#alert-container').html(`
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `);
+      },
+      error: function(xhr) {
+        console.error('Error:', xhr.responseText);
+        $('#buyModal').modal('hide');
+
+        // Show Bootstrap error alert
+        $('#alert-container').html(`
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> ${xhr.responseText}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `);
+      }
+    });
+
+  }
+
 
   $(document).ready(function() {
     const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
