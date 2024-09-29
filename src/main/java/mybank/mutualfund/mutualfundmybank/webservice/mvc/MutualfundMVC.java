@@ -119,6 +119,23 @@ public class MutualfundMVC {
             return "redirect:/fund/fundAvailable?error";
         }
     }
+
+    @PostMapping("/updateFund")
+    public ResponseEntity<Object> saveUpdateFund(@RequestParam Float navValue,
+                                                 @RequestParam Double amtInvested,
+                                                 @RequestParam Double updatedAmt,
+                                                 @RequestParam Integer fundAvailableId){
+            FundAvailed availed = new FundAvailed();
+            availed.setAccountId(accountId);
+            availed.setFundAvailableId(fundAvailableId);
+            Double totalAmt = amtInvested + updatedAmt;
+            Double units=totalAmt/navValue;
+            availed.setUnits(units);
+
+            String fundAvailedMessage = fundRepository.callSaveUpdateFundAvailed(availed);
+            return ResponseEntity.ok(fundAvailedMessage);
+
+    }
     @PostMapping("/applyFund")
     public ResponseEntity<Object> saveAppliedFund(@RequestBody FundAvailed availed) {
 
@@ -127,6 +144,7 @@ public class MutualfundMVC {
             Double units = availed.getAmtInvested() / availed.getNavValue();
 
             // Set necessary fields
+            availed.setAmtInvested(availed.getAmtInvested());
             availed.setAccountId(accountId); // Ensure this is set from session or security context
             availed.setStartDate(availed.getStartDate());
             availed.setUnits(units);

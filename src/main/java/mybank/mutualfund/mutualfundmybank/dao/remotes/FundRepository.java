@@ -14,4 +14,5 @@ public interface FundRepository {
     String callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException;
     List<FundAvailed> callAllFundAvailed(Integer accountId) throws SQLException, FundException;
 
+    String callSaveUpdateFundAvailed(FundAvailed availed);
 }

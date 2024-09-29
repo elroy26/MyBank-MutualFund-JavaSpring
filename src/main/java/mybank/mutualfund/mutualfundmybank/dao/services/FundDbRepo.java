@@ -96,7 +96,7 @@ public class FundDbRepo implements FundRepository {
     @Override
     public List<FundAvailed> callAllFundAvailed(Integer accountId) throws SQLException, FundException {
         List<FundAvailed> fundAvailedList = new ArrayList<>();
-        String sql = "SELECT fa.FUND_NAME, fav.AMT_INVESTED, fav.UNITS, fa.NAV_VALUE, ft.FUND_TYPE_NAME " +
+        String sql = "SELECT fa.FUND_NAME, fav.AMT_INVESTED, fav.UNITS, fa.NAV_VALUE, ft.FUND_TYPE_NAME, fav.fund_available_id " +
                 "FROM FUND_AVAILABLE fa " +
                 "JOIN FUND_TYPE ft ON ft.fund_type_id = fa.fund_type_id " +
                 "JOIN FUND_AVAILED fav ON fa.FUND_AVAILABLE_ID = fav.FUND_AVAILABLE_ID " +
@@ -106,6 +106,7 @@ public class FundDbRepo implements FundRepository {
             // Execute the query and map the result set to FundAvailed objects
             fundAvailedList = jdbcTemplate.query(sql, new Object[]{accountId}, (rs, rowNum) -> {
                 FundAvailed fundAvailed = new FundAvailed();
+                fundAvailed.setFundAvailableId(rs.getInt("FUND_AVAILABLE_ID"));
                 fundAvailed.setFundTypeName(rs.getString("FUND_TYPE_NAME"));
                 fundAvailed.setFundName(rs.getString("FUND_NAME"));
                 fundAvailed.setAmtInvested(rs.getDouble("AMT_INVESTED"));
@@ -136,5 +137,30 @@ public class FundDbRepo implements FundRepository {
             throw new FundException("An unexpected error occurred: " + e.getMessage());
         }
     }
+
+    @Override
+    public String callSaveUpdateFundAvailed(FundAvailed availed) {
+        // Calculate units based on investment amount and NAV
+        // SQL query to update the FUND_AVAILED table
+        String sql = "UPDATE FUND_AVAILED " +
+                "SET amt_invested = ?, units = ? " +
+                "WHERE fund_available_id = ? AND account_id = ?";
+
+        try {
+
+            jdbcTemplate.update(sql,
+                    availed.getAmtInvested(),      // Updated investment amount
+                    availed.getUnits(),            // Updated units (calculated)
+                    availed.getFundAvailableId(),  // Fund available ID to identify the fund
+                    availed.getAccountId()     // Fund availed ID to uniquely identify the record
+            );
+
+            return "Fund availed details updated successfully!";
+        } catch (Exception e) {
+            // Handle and log the exception, and return an error message
+            return "Error updating fund availed: " + e.getMessage();
+        }
+    }
+
 
 }
