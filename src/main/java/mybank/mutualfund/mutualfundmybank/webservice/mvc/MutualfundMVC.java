@@ -51,6 +51,8 @@ public class MutualfundMVC {
         return "dashboard";
     }
 
+
+
     @GetMapping("/signup")
     public String signup() {
         return "signup";
@@ -155,7 +157,27 @@ public class MutualfundMVC {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
     }
+    @GetMapping("/portfolio")
+    public String getAvailedFunds(Model model) {
+        try {
+            List<FundAvailed> availedFunds = fundRepository.callAllFundAvailed(accountId);
+            model.addAttribute("availedFunds", availedFunds);  // Add the funds to the model
 
+            // Return the portfolio view
+            return "holdings";
 
+        } catch (FundException e) {
+            if (e.getMessage().contains("ERR-FA")) {
+                model.addAttribute("error", "You haven't invested in any funds currently");
+                return "holdings";
+            } else {
+                model.addAttribute("error", "Error buying funds: " + e.getMessage());
+                return "holdings";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "An unexpected error occurred.");
+            return "holdings";
+        }
+    }
 
 }

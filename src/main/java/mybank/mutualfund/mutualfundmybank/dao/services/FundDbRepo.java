@@ -23,6 +23,7 @@ public class FundDbRepo implements FundRepository {
     Logger LOGGER = LoggerFactory.getLogger(FundDbRepo.class);
 
 
+
     @Override
     public List<FundAvailable> callAllFundAvailable() throws SQLException {
         List<FundAvailable> fundAvailableList = null;
@@ -91,4 +92,49 @@ public class FundDbRepo implements FundRepository {
 
         }
     }
+
+    @Override
+    public List<FundAvailed> callAllFundAvailed(Integer accountId) throws SQLException, FundException {
+        List<FundAvailed> fundAvailedList = new ArrayList<>();
+        String sql = "SELECT fa.FUND_NAME, fav.AMT_INVESTED, fav.UNITS, fa.NAV_VALUE, ft.FUND_TYPE_NAME " +
+                "FROM FUND_AVAILABLE fa " +
+                "JOIN FUND_TYPE ft ON ft.fund_type_id = fa.fund_type_id " +
+                "JOIN FUND_AVAILED fav ON fa.FUND_AVAILABLE_ID = fav.FUND_AVAILABLE_ID " +
+                "WHERE fav.ACCOUNT_ID = ? AND fav.FUND_STATUS = 'active'";
+
+        try {
+            // Execute the query and map the result set to FundAvailed objects
+            fundAvailedList = jdbcTemplate.query(sql, new Object[]{accountId}, (rs, rowNum) -> {
+                FundAvailed fundAvailed = new FundAvailed();
+                fundAvailed.setFundTypeName(rs.getString("FUND_TYPE_NAME"));
+                fundAvailed.setFundName(rs.getString("FUND_NAME"));
+                fundAvailed.setAmtInvested(rs.getDouble("AMT_INVESTED"));
+                fundAvailed.setUnits(rs.getDouble("UNITS"));
+                fundAvailed.setNavValue(rs.getFloat("NAV_VALUE"));
+                return fundAvailed;
+            });
+
+            if (fundAvailedList.isEmpty()) {
+                throw new FundException("ERR-FA -No availed funds found for the provided account ID.");
+            }
+
+            return fundAvailedList;
+
+        } catch (DataAccessException e) {
+            // Handle specific SQL error cases
+            LOGGER.error("Database error occurred while fetching availed funds: {}", e.getMessage());
+                // Generic database error
+            throw new FundException("Database error occurred: " + e.getMessage());
+
+
+        } catch (FundException e) {
+            LOGGER.error("Error: {}", e.getMessage());
+            throw e;  // Re-throw to maintain exception handling
+
+        } catch (Exception e) {
+            LOGGER.error("An unexpected error occurred: {}", e.getMessage());
+            throw new FundException("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
 }
