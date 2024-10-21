@@ -121,19 +121,23 @@ public class MutualfundMVC {
     }
 
     @PostMapping("/updateFund")
-    public ResponseEntity<Object> saveUpdateFund(@RequestParam Float navValue,
-                                                 @RequestParam Double amtInvested,
-                                                 @RequestParam Double updatedAmt,
-                                                 @RequestParam Integer fundAvailableId){
+    public ResponseEntity<Object> saveUpdateFund(@RequestBody FundAvailed fundUpdateRequest) {
+        try {
             FundAvailed availed = new FundAvailed();
             availed.setAccountId(accountId);
-            availed.setFundAvailableId(fundAvailableId);
-            Double totalAmt = amtInvested + updatedAmt;
-            Double units=totalAmt/navValue;
-            availed.setUnits(units);
+            availed.setFundAvailableId(fundUpdateRequest.getFundAvailableId());
+            availed.setAmtInvested(fundUpdateRequest.getAmtInvested());
+            availed.setUnits(fundUpdateRequest.getUnits());
 
             String fundAvailedMessage = fundRepository.callSaveUpdateFundAvailed(availed);
             return ResponseEntity.ok(fundAvailedMessage);
+        } catch (Exception e) {
+            // Handle any other general exceptions
+            System.err.println("Error: " + e.getMessage());
+
+            // Return a 500 Internal Server Error response for general exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+        }
 
     }
     @PostMapping("/applyFund")

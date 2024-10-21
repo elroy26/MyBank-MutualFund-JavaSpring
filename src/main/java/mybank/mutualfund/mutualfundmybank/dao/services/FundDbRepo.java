@@ -140,8 +140,7 @@ public class FundDbRepo implements FundRepository {
 
     @Override
     public String callSaveUpdateFundAvailed(FundAvailed availed) {
-        // Calculate units based on investment amount and NAV
-        // SQL query to update the FUND_AVAILED table
+
         String sql = "UPDATE FUND_AVAILED " +
                 "SET amt_invested = ?, units = ? " +
                 "WHERE fund_available_id = ? AND account_id = ?";
@@ -155,7 +154,7 @@ public class FundDbRepo implements FundRepository {
                     availed.getAccountId()     // Fund availed ID to uniquely identify the record
             );
 
-            return "Fund availed details updated successfully!";
+            return "Fund details updated successfully!!!";
         } catch (Exception e) {
             // Handle and log the exception, and return an error message
             return "Error updating fund availed: " + e.getMessage();

@@ -74,76 +74,77 @@
 <div th:replace="dashboard :: dashboard"></div>
 <div class="container mt-5">
     <h2 class="mb-4 fw-bolder" style="color: #182052;">Availed Mutual Funds</h2>
-    <form name = "application" th:action="@{'/ui/updateFund'}" method="post">
-        <!-- Mutual Funds Cards -->
-        <div class="row" th:if="${availedFunds != null and !#lists.isEmpty(availedFunds)}">
-            <div th:each="fund : ${availedFunds}" class="col-lg-5 col-md-12 m-3">
-                <div class="card rounded-4 border-3 shadow-sm">
-                    <div class="card-header rounded-bottom-2">
-                        <h5 th:text="${fund.fundName}">Fund Name</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>
-                            <strong>Current NAV:</strong>
-                            <span class="text-success fw-bolder">
+    <div id="alert-container"></div>
+    <!-- Mutual Funds Cards -->
+    <div class="row" th:if="${availedFunds != null and !#lists.isEmpty(availedFunds)}">
+        <div th:each="fund : ${availedFunds}" class="col-lg-5 col-md-12 m-3">
+            <div class="card rounded-4 border-3 shadow-sm">
+                <div class="card-header rounded-bottom-2">
+                    <h5 th:text="${fund.fundName}">Fund Name</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Current NAV:</strong>
+                        <span class="text-success fw-bolder">
                             <i class="bi bi-currency-rupee fst-normal"></i>
-                            <input class="nav-input text-success" th:name="navValue"  th:value="${fund.navValue}"></input>
-                            </span>
-                        </p>
-                        <p>
-                            <strong>Investment Amount:</strong>
-                            <i class="bi bi-currency-rupee fst-normal"></i>
-                            <input class="nav-input"  th:name="amtInvested"  th:value="${fund.amtInvested}">
-                        </p>
-                        <p>
-                            <strong>Units:</strong>
-                            < th:text="${fund.units}"></span>
-                        </p>
-                        <!-- Buy More and Sell Buttons -->
-                        <div class="d-flex justify-content-between mt-3 col col-12">
-                            <button type="button"
-                                    class="btn btn-buy col col-5 rounded-4"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#buyModal"
-                                    th:data-fundid="${fund.fundAvailableId}"
-                                    th:data-amtInvested="${fund.minInvestAmt}"
-                                    th:data-fundname="${fund.fundName}"
-                                    th:data-fundtype="${fund.fundTypeName}"
-                                    th:data-navValue="${fund.navValue}">
-                                Buy More
-                            </button>
-                            <button type="button" class="btn btn-sell col col-5 rounded-4">Sell</button>
-                        </div>
+                            <input class="nav-input text-success" th:name="navValue" th:value="${fund.navValue}" readonly></input>
+                        </span>
+                    </p>
+                    <p>
+                        <strong>Investment Amount:</strong>
+                        <i class="bi bi-currency-rupee fst-normal"></i>
+                        <input class="nav-input" th:name="amtInvested" th:value="${fund.amtInvested}" readonly></input>
+                    </p>
+                    <p>
+                        <strong>Units:</strong>
+                        <span th:text="${fund.units}"></span>
+                    </p>
+                    <!-- Buy More and Sell Buttons -->
+                    <div class="d-flex justify-content-between mt-3 col col-12">
+                        <button type="button"
+                                class="btn btn-buy col col-5 rounded-4"
+                                data-bs-toggle="modal"
+                                data-bs-target="#buyModal"
+                                th:data-fundid="${fund.fundAvailableId}"
+                                th:data-amtInvested="${fund.amtInvested}"
+                                th:data-fundname="${fund.fundName}"
+                                th:data-fundtype="${fund.fundTypeName}"
+                                th:data-navValue="${fund.navValue}">
+                            Buy More
+                        </button>
+                        <button type="button" class="btn btn-sell col col-5 rounded-4">Sell</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- No Funds Available Message -->
-        <div th:if="${#lists.isEmpty(availedFunds)}" class="alert alert-info" role="alert">
-            You haven't invested in any funds currently.
-        </div>
+    <!-- No Funds Available Message -->
+    <div th:if="${#lists.isEmpty(availedFunds)}" class="alert alert-info" role="alert">
+        You haven't invested in any funds currently.
+    </div>
 
-
-        <!-- Modal -->
-        <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <i class="bi bi-bank2 pe-4" style="font-size: 34px; color: #182052;"></i>
-                        <div>
-                            <h5 class="modal-title fw-bolder" id="buyModalLabel" style="color: #182052;"><span id="modalFundName"></span></h5>
-                            <p class="mb-0" style="color: rgba(24,32,82,0.67); font-family: 'Poppins', sans-serif">
-                                Growth . Equity . <span id="modalFundType"></span>
-                            </p>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="bi bi-bank2 pe-4" style="font-size: 34px; color: #182052;"></i>
+                    <div>
+                        <h5 class="modal-title fw-bolder" id="buyModalLabel" style="color: #182052;"><span id="modalFundName"></span></h5>
+                        <p class="mb-0" style="color: rgba(24,32,82,0.67); font-family: 'Poppins', sans-serif">
+                            Growth &bull; Equity &bull; <span id="modalFundType"></span>
+                        </p>
                     </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-                    <!-- Hidden input for fundAvailableId moved inside the modal -->
-                    <input type="hidden" th:name="fundAvailableId" id="modalFundAvailableId">
-                    <input type="hidden" id="modalNav">
-                    <input type="hidden" id="modalAmt">
+                <!-- Form inside modal -->
+                <form th:action="@{'/ui/updateFund'}" method="post">
+                    <!-- Hidden inputs for dynamic data -->
+                    <input type="hidden" name="fundAvailableId" id="modalFundAvailableId">
+                    <input type="hidden" name="navValue" id="modalNav">
+                    <input type="hidden" name="amtInvested" id="modalAmt">
 
                     <div class="modal-body" style="color: #182052">
                         <!-- Payment Method Selection -->
@@ -167,33 +168,39 @@
                         <div class="form-group mt-3">
                             <label for="investmentAmount" class="form-label">Investment Amount:</label>
                             <div class="input-group">
-                                <input type="number" th:name="updatedAmt" class="form-control" id="investmentAmount" placeholder="Enter amount" required>
+                                <input type="number" name="updatedAmt" class="form-control" id="investmentAmount" placeholder="Enter amount" required>
                             </div>
                             <div id="error-message" class="text-danger" style="display: none;"></div>
                         </div>
                     </div>
+
                     <div class="modal-footer justify-content-center">
-                        <button type="submit" id="buyForm" class="btn btn-primary col-4 rounded-4">Buy now</button>
+                        <button type="submit" id="buyFormButton" class="btn btn-primary col-4 rounded-4">Buy now</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <!-- JS Script -->
 <script>
+    // Ensure that the form submit button triggers the setJsonAndSubmit function
+    $('#buyFormButton').on('click', function(event) {
+        setJsonAndSubmit(event);  // Call your custom function when the form is submitted
+    });
+
     function setJsonAndSubmit(event) {
-        event.preventDefault();
-        var amtInvested = $('#investmentAmount').val();  // Parse the investment amount as a float
-        var initialInvestment = $('#modalAmt').val();     // Parse initial investment
-        var fundAvailableId = parseInt($('#modalFundAvailableId').val(), 10); // Parse as integer
-        var navValue = $('#modalNav').val();              // Parse NAV value
+        event.preventDefault();  // Prevent the default form submission
+
+        var amtInvested = parseFloat($('#investmentAmount').val());  // Ensure it's parsed as a float
+        var initialInvestment = parseFloat($('#modalAmt').val());
+        var fundAvailableId = parseInt($('#modalFundAvailableId').val(), 10);
+        var navValue = parseFloat($('#modalNav').val());
 
         // Calculate total investment and units
         var total = amtInvested + initialInvestment;
-        var units = total / navValue;// Get the value from the hidden field in the modal
-
+        var units = total / navValue;
 
         // Input validation
         if (!amtInvested || amtInvested <= 0) {
@@ -204,57 +211,63 @@
         }
 
         const formData = {
-            fundAvailableId: fundAvailableId, // Use the modal's fundAvailableId
+            fundAvailableId: fundAvailableId,
             amtInvested: total,
-            units: units// Convert string to floating-point number
+            units: units
         };
-
+console.log(formData)
+        // Send data via AJAX
         $.ajax({
-            url: '/ui/applyFund',
+            url: '/ui/updateFund',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(message) {
                 $('#buyModal').modal('hide');
-                // Show Bootstrap success alert
                 $('#alert-container').html(`
-                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>Success!</strong> ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-                `);
+                </div>
+            `);
+                // Set a timeout to redirect after displaying the alert
+                setTimeout(function() {
+                    window.location.href = '/ui/portfolio';
+                }, 3000); // Redirect after 3 seconds (3000 milliseconds)
             },
             error: function(xhr) {
                 console.error('Error:', xhr.responseText);
                 $('#buyModal').modal('hide');
-                // Show Bootstrap error alert
                 $('#alert-container').html(`
-                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> ${xhr.responseText}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-                `);
+                </div>
+            `);
             }
         });
     }
+
 
     $('#buyModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var fundName = button.data('fundname'); // Extract fund name from data-* attributes
         var fundType = button.data('fundtype'); // Extract fund type from data-* attributes
         var fundAvailableId = button.data('fundid'); // Extract fund ID
-        var nav = button.data('navValue'); // Extract fund ID
-        var amtInvested = button.data('amtInvested'); // Extract fund ID
+        var nav = button.data('navvalue'); // Correct casing for nav value
+        var amtInvested = button.data('amtinvested'); // Correct casing for amount invested
 
         // Update the modal's content
         var modal = $(this);
         modal.find('#modalFundName').text(fundName);
         modal.find('#modalFundType').text(fundType);
-        // Update the hidden field value for fundAvailableId inside the modal
-        $('#modalFundAvailableId').val(fundAvailableId);
-        $('#modalNav').val(nav);
-        $('#modalAmt').val(amtInvested);
+
+        // Update the hidden field values inside the modal
+        modal.find('#modalFundAvailableId').val(fundAvailableId);
+        modal.find('#modalNav').val(nav);
+        modal.find('#modalAmt').val(amtInvested);
     });
+
 </script>
 </body>
 
