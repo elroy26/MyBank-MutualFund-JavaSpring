@@ -161,5 +161,22 @@ public class FundDbRepo implements FundRepository {
         }
     }
 
+    @Override
+    public String callSellFundAvailed(FundAvailed availed) {
+        String sql = "UPDATE FUND_AVAILED " +
+                "SET FUND_STATUS = ?, END_DATE = ? " +
+                "WHERE FUND_AVAILABLE_ID = ? AND ACCOUNT_ID = ?";
+        try{
+            jdbcTemplate.update(sql,
+                    availed.getFundStatus(),
+                    availed.getEndDate(),
+                    availed.getFundAvailableId(),
+                    availed.getAccountId());
+            return "Your redemption request has been successfully submitted.";
+        }catch (Exception e){
+            return "Error selling the funds: " + e.getMessage();
+        }
+    }
+
 
 }

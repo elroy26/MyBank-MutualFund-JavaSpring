@@ -42,14 +42,14 @@
             background-color: rgb(236, 238, 251);
         }
 
-        .btn-buy, .btn-sell {
+        .btn-buy, .btn-redeem {
             font-weight: bold;
             background-color: #f46627; /* Orange */
             border: none;
             color: white;
         }
 
-        .btn-buy:hover, .btn-sell:hover {
+        .btn-buy:hover, .btn-redeem:hover {
             background-color: rgba(204, 67, 5, 0.98); /* Hover effect for both buttons */
             color: white;
         }
@@ -112,7 +112,14 @@
                                 th:data-navValue="${fund.navValue}">
                             Buy More
                         </button>
-                        <button type="button" class="btn btn-sell col col-5 rounded-4">Sell</button>
+                        <button type="button"
+                                class="btn btn-redeem col col-5 rounded-4"
+                                th:data-fundid="${fund.fundAvailableId}"
+                                th:data-units="${fund.units}"
+                                th:data-fundname="${fund.fundName}"
+                                th:data-navvalue="${fund.navValue}">
+                            Redeem
+                        </button>
                     </div>
                 </div>
             </div>
@@ -123,6 +130,40 @@
     <div th:if="${#lists.isEmpty(availedFunds)}" class="alert alert-info" role="alert">
         You haven't invested in any funds currently.
     </div>
+
+    <!-- Redeem Confirmation Modal -->
+    <div class="modal fade" id="redeemModal" tabindex="-1" aria-labelledby="redeemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-5"> <!-- Added 'rounded-3' class here for more rounded corners -->
+                <!-- Modal Header -->
+                <div class="modal-header bg-success text-white rounded-top-5"> <!-- Rounded top corners for header -->
+                    <i class="bi bi-patch-check-fill pe-3" style="font-size: 44px;"></i>
+                    <div>
+                        <h5 class="modal-title fw-bolder" id="redeemModalLabel">Redemption Confirmation</h5>
+                        <p><strong>Your redemption request has been successfully submitted.</strong></p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body bg-light text-success-emphasis">
+                    <p><strong>Mutual Fund Name:</strong> <span id="redeemFundName"></span></p>
+                    <p><strong>Units Redeemed:</strong> <span id="redeemUnits"></span></p>
+                    <p><strong>Net Amount:</strong> ₹ <span id="redeemAmount"></span></p>
+                    <p><strong>Redemption Date:</strong> <span id="redeemDate"></span></p>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-success text-white rounded-bottom-5"> <!-- Rounded bottom corners for footer -->
+                    <p>The amount will be credited to your bank account within <strong>T+2</strong> working days. <strong>Thank you for investing with us!</strong></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!-- Modal -->
     <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
@@ -266,6 +307,50 @@ console.log(formData)
         modal.find('#modalFundAvailableId').val(fundAvailableId);
         modal.find('#modalNav').val(nav);
         modal.find('#modalAmt').val(amtInvested);
+    });
+
+    // Handle Redeem Button Click
+    $('.btn-redeem').on('click', function(event) {
+        var button = $(this);  // Button that triggered the redeem action
+        var fundAvailableId = button.data('fundid');  // Get fundAvailableId from button data attribute
+        var redeemUnits = button.data('units');       // Get the number of units to redeem from the fund
+        var fundName = button.data('fundname');       // Get fund name
+        var navValue = button.data('navvalue');       // Get the NAV value for calculation
+        var netAmount = (redeemUnits * navValue).toFixed(2);  // Calculate net amount
+
+        var endDate = new Date().toISOString().split('T')[0];  // Get today's date as end date
+
+        // Prepare data to send in AJAX request
+        const redeemData = {
+            fundAvailableId: fundAvailableId,
+            endDate: endDate
+        };
+
+        // Make AJAX call to redeem API
+        $.ajax({
+            url: '/ui/redeem',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(redeemData),
+            success: function(response) {
+                // Show Redemption Confirmation Modal with details
+                $('#redeemFundName').text(fundName);
+                $('#redeemUnits').text(redeemUnits);
+                $('#redeemAmount').text(netAmount);
+                $('#redeemDate').text(endDate);
+                $('#redeemModal').modal('show');
+
+                // Listen for the event when the modal is closed (either via cross button or clicking outside)
+                $('#redeemModal').on('hidden.bs.modal', function () {
+                    window.location.href = '/ui/portfolio';  // Redirect after modal is closed
+                });
+
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseText);
+                alert('Error processing redemption: ' + xhr.responseText);
+            }
+        });
     });
 
 </script>

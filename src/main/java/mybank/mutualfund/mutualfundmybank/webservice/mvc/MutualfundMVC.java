@@ -140,6 +140,27 @@ public class MutualfundMVC {
         }
 
     }
+
+    @PostMapping("/redeem")
+    public ResponseEntity<Object> saveRedeemFund(@RequestBody FundAvailed fundUpdateRequest) {
+        try {
+            FundAvailed availed = new FundAvailed();
+            availed.setAccountId(accountId);
+            availed.setFundAvailableId(fundUpdateRequest.getFundAvailableId());
+            availed.setEndDate(fundUpdateRequest.getEndDate());
+            availed.setFundStatus("inactive");
+
+            String fundAvailedMessage = fundRepository.callSellFundAvailed(availed);
+            return ResponseEntity.ok(fundAvailedMessage);
+        } catch (Exception e) {
+            // Handle any other general exceptions
+            System.err.println("Error: " + e.getMessage());
+            // Return a 500 Internal Server Error response for general exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+
     @PostMapping("/applyFund")
     public ResponseEntity<Object> saveAppliedFund(@RequestBody FundAvailed availed) {
 
