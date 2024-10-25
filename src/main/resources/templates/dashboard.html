@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
     <link rel="stylesheet" th:href="@{/styles/styles.css}">
     <script th:src="@{'/js/dashboard.js'}"></script>
 </head>
 <body>
 <div th:fragment="dashboard">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #ffffff;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand d-flex justify-content-start align-items-start" th:href="@{/fund/fundAvailable}">
                 <img class="p-0" th:src="@{'/images/logo.png'}" alt="My Bank Logo" style="width: 60px; height: 60px;"/>
@@ -25,12 +23,9 @@
 
             <div class="navbar-text ml-auto d-flex align-items-center">
                 <span th:id="Username" class="welcome-text" style="color: #182052; font-size: 24px;">Welcome, John Doe</span>
-
-                <!-- Make the profile icon clickable by wrapping it in an anchor tag -->
                 <a th:href="@{'/ui/account'}">
                     <i class="bi bi-person-circle" style="font-size: 44px;"></i>
                 </a>
-
                 <form id="logoutForm" action="/ui/logout" method="post" class="ml-2">
                     <button id="logoutButton" class="btn btn-logout" type="submit">Logout</button>
                 </form>
@@ -46,40 +41,47 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item pl-4">
-                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdownToggle" th:href="@{/fund/fundAvailable}" >
+                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdownToggle" th:href="@{/fund/fundAvailable}">
                             <i class="bi bi-house-door-fill" style="font-size: 18px;"></i> Home
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" href="#" id="insuranceDropdown">
-                            <i class="bi bi-info-circle-fill " style="font-size: 18px;"></i> About Us
+                            <i class="bi bi-info-circle-fill" style="font-size: 18px;"></i> About Us
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" th:href="@{'/ui/account'}" id="profileUpdateDropdown">
                             <i class="bi bi-person-check-fill" style="font-size: 18px;"></i> Profile Update
                         </a>
                     </li>
-
                     <li class="nav-item pl-3">
                         <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" th:href="@{'/ui/portfolio'}" id="applyMutualFundDropdown">
                             <i class="bi bi-currency-exchange" style="font-size: 18px;"></i> Holdings
                         </a>
                     </li>
                 </ul>
+
+                <!-- Bootstrap Search Bar Trigger -->
+                <div class=" my-2 my-lg-0" id="fundSearchForm">
+                    <div class="input-group col-12">
+                        <input class="form-control rounded-start-4" style="width: 300px; background-color: #ffeadf"  placeholder="Search Funds"  disabled  >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger border-1 rounded-end-4" style="border-color: #f25c19; background-color: #f3bf99" type="button" data-toggle="modal" data-target="#searchModal">
+                                <i class="bi bi-search" style="color: #f25c19"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
-        <div class="row justify-content-between">
-            <div class="col-auto">
-                <a href="javascript:void(0)" onclick="window.history.back()" class="text-light mt-3 "><i class="bi bi-arrow-left-circle-fill btn btn-primary mt-3" style=" font-size: 24px;border-radius: 50px;padding: 3px;background-color: #182052;"></i></a>
-            </div>
-        </div>
-    </div>
+
+
 </div>
-<!--<div th:replace="footer :: footer">-->
+
+<script>
+
+</script>
 </body>
 </html>

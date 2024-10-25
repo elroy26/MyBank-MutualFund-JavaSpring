@@ -222,5 +222,19 @@ public class MutualfundMVC {
             return "holdings";
         }
     }
+    @GetMapping("/searchFunds")
+    public ResponseEntity<List<FundAvailable>> searchFunds(@RequestParam("searchTerm") String searchTerm) {
+        try {
+            // Call the repository to search funds by name using the searchTerm
+            List<FundAvailable> matchingFunds = fundRepository.callSearchFunds(searchTerm);
+
+            // Return the list of matching funds
+            return ResponseEntity.ok(matchingFunds);
+        } catch (Exception e) {
+            // Return an error response in case of any issues
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
 }

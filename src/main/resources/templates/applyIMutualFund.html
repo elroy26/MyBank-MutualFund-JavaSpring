@@ -147,7 +147,27 @@
             </div>
 
           </div>
-
+          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
+            <div class="form-row">
+              <div class="form-group col-md-6 d-flex align-items-center">
+                <canvas id="riskGauge" style="width: 100%; height: auto; max-width: 200px;"></canvas>
+                <!-- Label for risk level to the right of the gauge -->
+                <div class="ms-3">
+                  <label for="fundRisk" class="fw-bold" style="font-size: 16px; color: rgba(24,32,82,0.67);">Risk involved:</label><br>
+                  <span id="fundRisk" style="font-size: 22px; color: #182052;"></span>
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5 pt-3">
+                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="managerName" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Fund manager:</label><br>
+                    <span id="managerName" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
             <!-- First Row -->
             <div class="form-row">
@@ -194,27 +214,7 @@
             </div>
           </div>
 
-          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
-            <div class="form-row">
-              <div class="form-group col-md-6 d-flex align-items-center">
-                <canvas id="riskGauge" style="width: 100%; height: auto; max-width: 200px;"></canvas>
-                <!-- Label for risk level to the right of the gauge -->
-                <div class="ms-3">
-                  <label for="fundRisk" class="fw-bold" style="font-size: 16px; color: rgba(24,32,82,0.67);">Risk involved:</label><br>
-                  <span id="fundRisk" style="font-size: 22px; color: #182052;"></span>
-                </div>
-              </div>
-              <div class="form-group col-md-6 ">
-                <div class="d-flex align-items-center ps-5 pt-3">
-                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
-                  <div>
-                    <label for="managerName" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Fund manager:</label><br>
-                    <span id="managerName" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
           <div class="text-center">
             <button type="button" class="btn btn-buy btn-block mt-5 mb-3 col-3 mx-auto rounded-4" data-bs-toggle="modal" data-bs-target="#buyModal">Buy</button>
           </div>

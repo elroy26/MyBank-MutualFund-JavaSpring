@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,6 +176,39 @@ public class FundDbRepo implements FundRepository {
         }catch (Exception e){
             return "Error selling the funds: " + e.getMessage();
         }
+    }
+
+    @Override
+    public List<FundAvailable> callSearchFunds(String searchTerm) throws SQLException {
+        List<FundAvailable> funds = new ArrayList<>();
+
+        jdbcTemplate.execute((Connection conn) -> {
+            CallableStatement cs = null;
+            ResultSet rs = null;
+            try {
+                // Prepare and execute the stored procedure call
+                cs = conn.prepareCall("{ call searchFundsKmp(?, ?) }"); // Call searchFundsKmp procedure
+                cs.setString(1, searchTerm);  // Set input parameter
+                cs.registerOutParameter(2, Types.REF_CURSOR);  // Register output parameter as CURSOR
+
+                cs.execute();  // Execute the stored procedure
+
+                // Retrieve the cursor and iterate over the result set
+                rs = (ResultSet) cs.getObject(2);
+                while (rs.next()) {
+                    FundAvailable fund = new FundAvailable();
+                    fund.setFundName(rs.getString("fund_name"));
+                    fund.setFundTypeName(rs.getString("fund_type_name"));
+                    funds.add(fund);
+                }
+            } finally {
+                if (rs != null) rs.close();
+                if (cs != null) cs.close();
+            }
+            return null;
+        });
+
+        return funds;
     }
 
 

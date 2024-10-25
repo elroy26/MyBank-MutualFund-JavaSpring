@@ -16,4 +16,5 @@ public interface FundRepository {
 
     String callSaveUpdateFundAvailed(FundAvailed availed);
     String callSellFundAvailed(FundAvailed availed);
+    List<FundAvailable> callSearchFunds(String searchTerm) throws SQLException;
 }
