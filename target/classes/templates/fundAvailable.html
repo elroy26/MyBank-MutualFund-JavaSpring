@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mutual Funds</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <script th:src="@{'/js/dashboard.js'}"></script>
+  <style>
+    /* Custom Styles for Cards */
+    .card{
+      overflow: hidden;
+    }
+    .card:hover {
+      border-color: rgba(188, 196, 244, 0.65);
+      transition: 0.3s;
+      transform: scale(1.1);
+    }
+
+    .card-header {
+      background-color: #182052; /* Dark Blue */
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .card-body {
+      background-color: rgb(236, 238, 251);
+    }
+
+    .btn-apply {
+      font-weight: bolder;
+      background-color: #f46627; /* Orange */
+      border: none;
+      color: white;
+    }
+
+    .btn-apply:hover {
+      background-color: rgba(246, 84, 11, 0.98);
+    }
+  </style>
+</head>
+<body>
+<!-- Replace with your dashboard fragment -->
+<div th:replace="dashboard :: dashboard"></div>
+
+<div class="container mt-5 ">
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="searchModalLabel">Search Mutual Funds</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="form-inline">
+            <div class="input-group d-flex justify-content-center align-items-center col-12">
+              <div class="input-group-prepend">
+                                <span class="input-group-text" id="search-icon">
+                                    <i class="bi bi-search"></i>
+                                </span>
+              </div>
+              <input type="text" id="fundSearch" style="width: 390px" placeholder="Search Mutual Funds"
+                     class="form-control" aria-label="Search" aria-describedby="search-icon">
+            </div>
+          </form>
+        </div>
+        <div id="fundCardsContainer" class="container mt-3"></div> <!-- Container for cards inside modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2 class="mb-4 fw-bolder" style="color: #182052;">Available Mutual Funds</h2>
+
+  <!-- Mutual Funds Cards -->
+  <div th:if="${fundAvailable}" class="row ">
+    <div th:each="fund : ${fundAvailable}" class="col-lg-5 col-md-12 m-3 ">
+      <div class="card rounded-4 border-3 shadow-sm" >
+        <div class="card-header rounded-bottom-2  ">
+          <h5 th:text="${fund.fundName}">Fund Name</h5>
+        </div>
+        <div class="card-body ">
+          <p><strong>Current NAV:</strong>
+            <span class="text-success fw-bolder">
+              <i class="bi bi-currency-rupee fst-normal" th:text="${fund.navValue}"></i>
+            </span>
+          </p>
+          <p >
+            <strong >Asset Under Management:</strong>
+            <i class="bi bi-currency-rupee fst-normal" th:text="${fund.AUM}"></i>
+            <span class="fw-bold">Cr.</span>
+          </p>
+          <p>
+            <strong>Minimum Investment Amount:</strong>
+            <i class="bi bi-currency-rupee fst-normal" th:text="${fund.minInvestAmt}"></i>
+          </p>
+
+          <!-- Apply Now Button -->
+          <a th:href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
+             class="btn btn-apply"
+             th:data-href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
+              th:data-fund-id="${fund.fundAvailableId}"
+              th:data-fund-name="${fund.fundName}"
+              th:data-fund-type-id="${fund.fundTypeId}"
+              th:data-fund-type-name="${fund.fundTypeName}"
+              th:data-expense-ratio="${fund.expenseRatio}"
+              th:data-nav-value="${fund.navValue}"
+              th:data-manager-id="${fund.managerId}"
+              th:data-manager-first-name="${fund.firstName}"
+              th:data-manager-last-name="${fund.lastName}"
+              th:data-exit-load="${fund.exitLoad}"
+              th:data-aum="${fund.AUM}"
+              th:data-min-invest-amt="${fund.minInvestAmt}"
+              th:data-fund-company-id="${fund.fundCompanyId}"
+              th:data-fund-company-name="${fund.fundCompanyName}"
+              onclick="storeFundDetails(event)">
+              <i class="bi bi-arrow-right-circle"></i> Invest
+          </a>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Funds Available Message -->
+  <div th:unless="${fundAvailable}" class="alert alert-info" role="alert">
+    No mutual funds are currently available.
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    let debounceTimer;
+
+    // Event handler for search input
+    $('#fundSearch').on('input', function() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        let query = $(this).val(); // Get the search query
+
+        if (query.length > 0) { // Proceed only if there is some input
+          $.ajax({
+            url: '/ui/searchFunds', // Backend endpoint for the search
+            type: 'GET',
+            data: { searchTerm: query }, // Send the input value as 'searchTerm'
+            success: function(funds) {
+              updateFundCards(funds); // Update the UI with the returned fund data
+            },
+            error: function() {
+              $('#fundCardsContainer').html('<p>Error fetching results</p>');
+            }
+          });
+        } else {
+          $('#fundCardsContainer').empty(); // Clear results if input is empty
+        }
+      }, 300); // Wait for 300ms after last keypress before sending request
+    });
+
+    // Function to update fund cards
+    function updateFundCards(funds) {
+      let fundCardsContainer = $('#fundCardsContainer');
+      fundCardsContainer.empty(); // Clear previous results
+
+      if (funds.length === 0) {
+        fundCardsContainer.html('<p>No mutual funds found</p>');
+      } else {
+        $.each(funds, function(index, fund) {
+          let cardHTML = `
+    <div class="card mb-3">
+        <div class="card-body d-flex align-items-center" style="background-color: rgba(248,165,124,0.31)">
+            <i class="bi bi-bank2 me-3" style="font-size: 34px; color: #182052;"></i> <!-- Icon on the left with right margin -->
+            <div>
+                <h5 class="card-title mb-1" style="color: #182052">${fund.fundName}</h5>
+                <p class="card-text" style="color: #182052">Growth • Equity • ${fund.fundTypeName}</p>
+            </div>
+        </div>
+    </div>
+`;
+
+          fundCardsContainer.append(cardHTML); // Append each card
+        });
+      }
+      fundCardsContainer.show(); // Ensure results container is visible
+    }
+  });
+  function storeFundDetails(event) {
+    // Prevent the default link behavior so the storage is done before navigation
+    event.preventDefault();
+
+    // Get the button that was clicked
+    const investButton = event.currentTarget;
+
+    // Create the JSON object with the fund details
+    const fundDetails = {
+      fundAvailableId: investButton.getAttribute("data-fund-id"),
+      fundName: investButton.getAttribute("data-fund-name"),
+      fundTypeId: investButton.getAttribute("data-fund-type-id"),
+      fundTypeName: investButton.getAttribute("data-fund-type-name"),
+      expenseRatio: investButton.getAttribute("data-expense-ratio"),
+      navValue: investButton.getAttribute("data-nav-value"),
+      managerId: investButton.getAttribute("data-manager-id"),
+      managerFirstName: investButton.getAttribute("data-manager-first-name"),
+      managerLastName: investButton.getAttribute("data-manager-last-name"),
+      exitLoad: investButton.getAttribute("data-exit-load"),
+      AUM: investButton.getAttribute("data-aum"),
+      minInvestAmt: investButton.getAttribute("data-min-invest-amt"),
+      fundCompanyId: investButton.getAttribute("data-fund-company-id"),
+      fundCompanyName: investButton.getAttribute("data-fund-company-name")
+    };
+
+    // Store the object in session storage
+    sessionStorage.setItem("selectedFund", JSON.stringify(fundDetails));
+
+    // Redirect to the invest page
+    const fundPageUrl = investButton.getAttribute("data-href"); // Use the stored data-href for redirection
+    window.location.href = fundPageUrl;
+  }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>MyBank Portfolio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <script th:src="@{'/js/dashboard.js'}"></script>
+    <style>
+        /* Custom Styles for Cards */
+        .card {
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: rgba(188, 196, 244, 0.65);
+            transition: 0.3s;
+            transform: scale(1.1);
+        }
+
+        .card-header {
+            background-color: #182052; /* Dark Blue */
+            color: #ffffff;
+        }
+
+        .card-body {
+            background-color: rgb(236, 238, 251);
+        }
+
+        .btn-buy, .btn-redeem {
+            font-weight: bold;
+            background-color: #f46627; /* Orange */
+            border: none;
+            color: white;
+        }
+
+        .btn-buy:hover, .btn-redeem:hover {
+            background-color: rgba(204, 67, 5, 0.98); /* Hover effect for both buttons */
+            color: white;
+        }
+
+        .nav-input {
+            border: none; /* No border */
+            background: transparent; /* Transparent background */
+             /* Match the color of .text-success */ /* Match the boldness */
+            font-size: 1rem; /* Adjust the font size */
+            padding: 0; /* No padding */
+            width: auto; /* Adjust width as needed */
+        }
+
+        /* Optional: Focus styles */
+        .nav-input:focus {
+            outline: none; /* Remove focus outline */
+            box-shadow: none; /* Remove any shadow */
+        }
+    </style>
+</head>
+<body>
+<div th:replace="dashboard :: dashboard"></div>
+<div class="container mt-5">
+    <h2 class="mb-4 fw-bolder" style="color: #182052;">Availed Mutual Funds</h2>
+    <div id="alert-container"></div>
+    <!-- Mutual Funds Cards -->
+    <div class="row" th:if="${availedFunds != null and !#lists.isEmpty(availedFunds)}">
+        <div th:each="fund : ${availedFunds}" class="col-lg-5 col-md-12 m-3">
+            <div class="card rounded-4 border-3 shadow-sm">
+                <div class="card-header rounded-bottom-2">
+                    <h5 th:text="${fund.fundName}">Fund Name</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Current NAV:</strong>
+                        <span class="text-success fw-bolder">
+                            <i class="bi bi-currency-rupee fst-normal"></i>
+                            <input class="nav-input text-success" th:name="navValue" th:value="${fund.navValue}" readonly></input>
+                        </span>
+                    </p>
+                    <p>
+                        <strong>Investment Amount:</strong>
+                        <i class="bi bi-currency-rupee fst-normal"></i>
+                        <input class="nav-input" th:name="amtInvested" th:value="${fund.amtInvested}" readonly></input>
+                    </p>
+                    <p>
+                        <strong>Units:</strong>
+                        <span th:text="${fund.units}"></span>
+                    </p>
+                    <!-- Buy More and Sell Buttons -->
+                    <div class="d-flex justify-content-between mt-3 col col-12">
+                        <button type="button"
+                                class="btn btn-buy col col-5 rounded-4"
+                                data-bs-toggle="modal"
+                                data-bs-target="#buyModal"
+                                th:data-fundid="${fund.fundAvailableId}"
+                                th:data-amtInvested="${fund.amtInvested}"
+                                th:data-fundname="${fund.fundName}"
+                                th:data-fundtype="${fund.fundTypeName}"
+                                th:data-navValue="${fund.navValue}">
+                            Buy More
+                        </button>
+                        <button type="button"
+                                class="btn btn-redeem col col-5 rounded-4"
+                                th:data-fundid="${fund.fundAvailableId}"
+                                th:data-units="${fund.units}"
+                                th:data-fundname="${fund.fundName}"
+                                th:data-navvalue="${fund.navValue}">
+                            Redeem
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Funds Available Message -->
+    <div th:if="${#lists.isEmpty(availedFunds)}" class="alert alert-info" role="alert">
+        You haven't invested in any funds currently.
+    </div>
+
+    <!-- Redeem Confirmation Modal -->
+    <div class="modal fade" id="redeemModal" tabindex="-1" aria-labelledby="redeemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-5"> <!-- Added 'rounded-3' class here for more rounded corners -->
+                <!-- Modal Header -->
+                <div class="modal-header bg-success text-white rounded-top-5"> <!-- Rounded top corners for header -->
+                    <i class="bi bi-patch-check-fill pe-3" style="font-size: 44px;"></i>
+                    <div>
+                        <h5 class="modal-title fw-bolder" id="redeemModalLabel">Redemption Confirmation</h5>
+                        <p><strong>Your redemption request has been successfully submitted.</strong></p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body bg-light text-success-emphasis">
+                    <p><strong>Mutual Fund Name:</strong> <span id="redeemFundName"></span></p>
+                    <p><strong>Units Redeemed:</strong> <span id="redeemUnits"></span></p>
+                    <p><strong>Net Amount:</strong> ₹ <span id="redeemAmount"></span></p>
+                    <p><strong>Redemption Date:</strong> <span id="redeemDate"></span></p>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-success text-white rounded-bottom-5"> <!-- Rounded bottom corners for footer -->
+                    <p>The amount will be credited to your bank account within <strong>T+2</strong> working days. <strong>Thank you for investing with us!</strong></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="bi bi-bank2 pe-4" style="font-size: 34px; color: #182052;"></i>
+                    <div>
+                        <h5 class="modal-title fw-bolder" id="buyModalLabel" style="color: #182052;"><span id="modalFundName"></span></h5>
+                        <p class="mb-0" style="color: rgba(24,32,82,0.67); font-family: 'Poppins', sans-serif">
+                            Growth &bull; Equity &bull; <span id="modalFundType"></span>
+                        </p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Form inside modal -->
+                <form th:action="@{'/ui/updateFund'}" method="post">
+                    <!-- Hidden inputs for dynamic data -->
+                    <input type="hidden" name="fundAvailableId" id="modalFundAvailableId">
+                    <input type="hidden" name="navValue" id="modalNav">
+                    <input type="hidden" name="amtInvested" id="modalAmt">
+
+                    <div class="modal-body" style="color: #182052">
+                        <!-- Payment Method Selection -->
+                        <label class="form-label">Payment Method:</label><br>
+                        <div class="form-group d-flex justify-content-around">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="UPI" checked>
+                                <label class="form-check-label" for="upi">UPI</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="netBanking" value="NetBanking">
+                                <label class="form-check-label" for="netBanking">Net banking</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="neftRtgs" value="NEFT/RTGS">
+                                <label class="form-check-label" for="neftRtgs">NEFT / RTGS</label>
+                            </div>
+                        </div>
+
+                        <!-- Investment Amount Input -->
+                        <div class="form-group mt-3">
+                            <label for="investmentAmount" class="form-label">Investment Amount:</label>
+                            <div class="input-group">
+                                <input type="number" name="updatedAmt" class="form-control" id="investmentAmount" placeholder="Enter amount" required>
+                            </div>
+                            <div id="error-message" class="text-danger" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" id="buyFormButton" class="btn btn-primary col-4 rounded-4">Buy now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Script -->
+<script>
+    // Ensure that the form submit button triggers the setJsonAndSubmit function
+    $('#buyFormButton').on('click', function(event) {
+        setJsonAndSubmit(event);  // Call your custom function when the form is submitted
+    });
+
+    function setJsonAndSubmit(event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        var amtInvested = parseFloat($('#investmentAmount').val());  // Ensure it's parsed as a float
+        var initialInvestment = parseFloat($('#modalAmt').val());
+        var fundAvailableId = parseInt($('#modalFundAvailableId').val(), 10);
+        var navValue = parseFloat($('#modalNav').val());
+
+        // Calculate total investment and units
+        var total = amtInvested + initialInvestment;
+        var units = total / navValue;
+
+        // Input validation
+        if (!amtInvested || amtInvested <= 0) {
+            $('#error-message').text('Please enter a valid investment amount.').show();
+            return;
+        } else {
+            $('#error-message').hide();
+        }
+
+        const formData = {
+            fundAvailableId: fundAvailableId,
+            amtInvested: total,
+            units: units
+        };
+console.log(formData)
+        // Send data via AJAX
+        $.ajax({
+            url: '/ui/updateFund',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(message) {
+                $('#buyModal').modal('hide');
+                $('#alert-container').html(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+                // Set a timeout to redirect after displaying the alert
+                setTimeout(function() {
+                    window.location.href = '/ui/portfolio';
+                }, 3000); // Redirect after 3 seconds (3000 milliseconds)
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseText);
+                $('#buyModal').modal('hide');
+                $('#alert-container').html(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> ${xhr.responseText}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+            }
+        });
+    }
+
+
+    $('#buyModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var fundName = button.data('fundname'); // Extract fund name from data-* attributes
+        var fundType = button.data('fundtype'); // Extract fund type from data-* attributes
+        var fundAvailableId = button.data('fundid'); // Extract fund ID
+        var nav = button.data('navvalue'); // Correct casing for nav value
+        var amtInvested = button.data('amtinvested'); // Correct casing for amount invested
+
+        // Update the modal's content
+        var modal = $(this);
+        modal.find('#modalFundName').text(fundName);
+        modal.find('#modalFundType').text(fundType);
+
+        // Update the hidden field values inside the modal
+        modal.find('#modalFundAvailableId').val(fundAvailableId);
+        modal.find('#modalNav').val(nav);
+        modal.find('#modalAmt').val(amtInvested);
+    });
+
+    // Handle Redeem Button Click
+    $('.btn-redeem').on('click', function(event) {
+        var button = $(this);  // Button that triggered the redeem action
+        var fundAvailableId = button.data('fundid');  // Get fundAvailableId from button data attribute
+        var redeemUnits = button.data('units');       // Get the number of units to redeem from the fund
+        var fundName = button.data('fundname');       // Get fund name
+        var navValue = button.data('navvalue');       // Get the NAV value for calculation
+        var netAmount = (redeemUnits * navValue).toFixed(2);  // Calculate net amount
+
+        var endDate = new Date().toISOString().split('T')[0];  // Get today's date as end date
+
+        // Prepare data to send in AJAX request
+        const redeemData = {
+            fundAvailableId: fundAvailableId,
+            endDate: endDate
+        };
+
+        // Make AJAX call to redeem API
+        $.ajax({
+            url: '/ui/redeem',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(redeemData),
+            success: function(response) {
+                // Show Redemption Confirmation Modal with details
+                $('#redeemFundName').text(fundName);
+                $('#redeemUnits').text(redeemUnits);
+                $('#redeemAmount').text(netAmount);
+                $('#redeemDate').text(endDate);
+                $('#redeemModal').modal('show');
+
+                // Listen for the event when the modal is closed (either via cross button or clicking outside)
+                $('#redeemModal').on('hidden.bs.modal', function () {
+                    window.location.href = '/ui/portfolio';  // Redirect after modal is closed
+                });
+
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseText);
+                alert('Error processing redemption: ' + xhr.responseText);
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

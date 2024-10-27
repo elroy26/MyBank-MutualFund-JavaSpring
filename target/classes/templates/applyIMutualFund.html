@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply Mutual Fund</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <script th:src="@{'/js/dashboard.js'}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gaugeJS@1.3.8/dist/gauge.min.js"></script>
+
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-top: 50px;
+    }
+    .form-header {
+      background-color: #182052;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700; /* You can change the weight to your preference */
+      color: white;
+      padding: 15px;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+    }
+    .form-box {
+      border: 1px solid #ff9800;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #ffecb3;
+      margin-top: 20px;
+    }
+    .btn-buy {
+      background-color: #ff9800;
+      color: white;
+      font-weight: bold;
+    }
+    .btn-buy:hover {
+      background-color: rgb(244, 102, 39);
+      color: white;
+      font-weight: bold;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #fundName {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bolder; /* This makes it bold */
+      font-size: 24px;   /* You can adjust the size as needed */
+      color: #ffffff;    /* Adjust color if needed */
+    }
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none; /* Chrome, Safari */
+      margin: 0;
+    }
+
+  </style>
+</head>
+<body>
+<div th:replace="dashboard :: dashboard"></div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <h2 class=" fw-bolder" style="color: #182052;">Fund Details</h2>
+    <div class="col-md-12">
+      <div class="form-container ">
+
+
+        <div class="form-header fw-bolder fs-poppins" style="background-color: #182052">
+          <h4><span id="fundName"></span></h4>
+        </div>
+
+        <form name = "application" th:action="@{'/ui/applyFund'}" method="post">
+
+          <input type="hidden" id="fundId" th:name="fundAvailableId" value="">
+          <input type="hidden" id="startDate" th:name="startDate" value="">
+          <div id="alert-container"></div>
+          <div class="form-row">
+          <!-- Transparent box for CURRENT NAV -->
+            <div class="form-group col-md-5 ">
+              <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
+                <!-- Icon on the left -->
+                <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+
+                <!-- Text next to the icon -->
+                <div>
+                  <label for="navValue" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">CURRENT NAV:</label><br>
+                  <input type="hidden" id="nav" th:name="navValue" value="">
+                  <span id="navValue" class="text-success ps-2" style="font-size: 22px; color: #182052;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-7">
+              <div class="form-box p-3 border-2 d-flex align-items-center shadow" style="background-color: rgba(255, 255, 255, 0.7);">
+                <!-- Icon on the left -->
+                <i class="bi bi-graph-up-arrow ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+
+                <!-- Text next to the icon -->
+                <div>
+                  <label for="cagrValue" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">
+                    CAGR:
+                  </label><br>
+                  <span id="cagrValue" class="text-success ps-2" style="font-size: 22px; color: #182052;"></span>
+                </div>
+
+                <!-- Dropdown Button for Selecting Year -->
+                <div class="ms-auto dropdown">
+                  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Year 1
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="yearDropdown">
+                    <li><a class="dropdown-item" href="#" data-year="1">1 Year</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="2">2 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="3">3 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="4">4 Years</a></li>
+                    <li><a class="dropdown-item" href="#" data-year="5">5 Years</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
+            <div class="form-row">
+              <div class="form-group col-md-6 d-flex align-items-center">
+                <canvas id="riskGauge" style="width: 100%; height: auto; max-width: 200px;"></canvas>
+                <!-- Label for risk level to the right of the gauge -->
+                <div class="ms-3">
+                  <label for="fundRisk" class="fw-bold" style="font-size: 16px; color: rgba(24,32,82,0.67);">Risk involved:</label><br>
+                  <span id="fundRisk" style="font-size: 22px; color: #182052;"></span>
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5 pt-3">
+                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="managerName" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Fund manager:</label><br>
+                    <span id="managerName" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-box p-3 shadow" style="background-color: rgba(255, 255, 255, 0.7); border:none;">
+            <!-- First Row -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-cash-coin ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="fundMinInvestment" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Min. investment:</label><br>
+                    <span id="fundMinInvestment" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-buildings ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="aum" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">AUM:</label><br>
+                    <span id="aum" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Second Row -->
+            <div class="form-row mt-3">
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-boxes ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="exitLoad" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Exit load:</label><br>
+                    <span id="exitLoad" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="d-flex align-items-center ps-5">
+                  <i class="bi bi-card-checklist ps-5 pe-3" style="font-size: 44px; color: #182052; margin-right: 15px;"></i>
+                  <div>
+                    <label for="expenseRatio" class="fw-bold col-lg-12 ps-0" style="font-size: 16px; color: rgba(24,32,82,0.67);">Expense ratio:</label><br>
+                    <span id="expenseRatio" class=" ps-2" style="font-size: 22px; color: #182052;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="text-center">
+            <button type="button" class="btn btn-buy btn-block mt-5 mb-3 col-3 mx-auto rounded-4" data-bs-toggle="modal" data-bs-target="#buyModal">Buy</button>
+          </div>
+          <!-- Modal -->
+          <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <i class="bi bi-bank2 pe-4 " style="font-size: 34px; color: #182052;"></i>
+                  <div>
+                    <h5 class="modal-title fw-bolder" id="buyModalLabel" style="color: #182052;"><span id="modalFundName"></span></h5>
+                    <p class="mb-0" style="color: rgba(24,32,82,0.67); font-family: 'Poppins', sans-serif">Growth . Equity . <span id="modalFundType"></span></p>
+                  </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="color: #182052">
+
+                  <!-- Payment Method Selection -->
+                  <label  class="form-label">Payment Method:</label><br>
+                  <div class="form-group d-flex justify-content-around ">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="UPI" checked>
+                      <label class="form-check-label" for="upi">UPI</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="paymentMethod" id="netBanking" value="NetBanking">
+                      <label class="form-check-label" for="netBanking">Net banking</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="paymentMethod" id="neftRtgs" value="NEFT/RTGS">
+                      <label class="form-check-label" for="neftRtgs">NEFT / RTGS</label>
+                    </div>
+                  </div>
+
+                  <!-- Investment Amount Input -->
+                  <div class="form-group mt-3">
+                    <label for="investmentAmount" class="form-label">Investment Amount:</label>
+                    <div class="input-group">
+                      <input type="number" th:name="amtInvested" class="form-control" id="investmentAmount" placeholder="Enter amount">
+                      <span id="incrementText" class="input-group-text text-primary bg-light" style="cursor: pointer;"></span>
+                    </div>
+                    <div id="error-message" class="text-danger" style="display: none;"></div>
+                  </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-center ">
+                  <button type="button" id="buyForm" class="btn btn-primary col-4 rounded-4" onclick="setSysDateAndSubmit()">Buy now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setSysDateAndSubmit() {
+    const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
+    const amtInvested = $('#investmentAmount').val();
+
+    const formData = {
+      fundAvailableId: parseInt(fundData.fundAvailableId), // Convert string to integer
+      amtInvested: amtInvested,
+      navValue: parseFloat(fundData.navValue), // Convert string to double (floating-point number)
+      startDate: new Date().toISOString().split('T')[0] // Current date in 'yyyy-MM-dd' format
+    };
+
+
+    $.ajax({
+      url: '/ui/applyFund',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function(message) {
+        $('#buyModal').modal('hide');
+        // Show Bootstrap success alert
+        $('#alert-container').html(`
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `);
+      },
+      error: function(xhr) {
+        console.error('Error:', xhr.responseText);
+        $('#buyModal').modal('hide');
+
+        // Show Bootstrap error alert
+        $('#alert-container').html(`
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> ${xhr.responseText}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `);
+      }
+    });
+
+  }
+
+
+  $(document).ready(function() {
+    const fundData = JSON.parse(sessionStorage.getItem('selectedFund'));
+    $('#fundId').val(parseInt(fundData.fundAvailableId, 10));
+    $('#nav').val(parseFloat(fundData.navValue));
+    const $investmentAmountInput = $('#investmentAmount');
+    const $errorMessage = $('#error-message');
+    const $incrementText = $('#incrementText');
+
+
+    // Update minimum investment based on selected fund
+    function updateMinInvestment() {
+      const minInvestmentAmount = fundData.minInvestAmt || 1000; // Default to 1000 if not set
+      $investmentAmountInput.val(minInvestmentAmount);
+      $incrementText.text(`+${minInvestmentAmount}`); // Set clickable text
+    }
+
+    // Initialize the page with the correct minimum investment
+    updateMinInvestment();
+
+    // Increment text click functionality
+    $incrementText.on('click', function () {
+      const minInvestmentAmount = parseFloat(fundData.minInvestAmt) || 1000; // Default to 1000 if not set
+      let currentValue = parseFloat($investmentAmountInput.val()) || 0; // Use parseFloat to handle numbers properly
+      const newValue = currentValue + minInvestmentAmount; // Increment the value by the minimum investment amount
+      $investmentAmountInput.val(newValue); // Set the new incremented value
+    });
+
+    // Validate on blur
+    $investmentAmountInput.on('blur', function () {
+      validateInvestment();
+    });
+
+    // Validate on form submit
+    $('#investmentForm').on('submit', function (e) {
+      if (!validateInvestment()) {
+        e.preventDefault(); // Prevent form submission if validation fails
+      }
+    });
+
+    // Validation function
+    function validateInvestment() {
+      const minInvestmentAmount = fundData.minInvestAmt || 1000; // Default to 1000 if not set
+      const value = $investmentAmountInput.val(); // Get the raw input value as a string
+
+      if (value === '' || value === null) { // Check if the input box is empty
+        $errorMessage.text("Value cannot be empty.");
+        $errorMessage.show();
+        return false;
+      }
+
+      const numericValue = parseFloat(value); // Convert the value to a number
+
+      if (isNaN(numericValue) || numericValue < minInvestmentAmount) { // Check if it's a valid number and meets the minimum amount
+        $errorMessage.text(`Value must be a valid number and greater than or equal to ₹${minInvestmentAmount}.`);
+        $errorMessage.show();
+        return false;
+      }
+
+      // Hide error if everything is valid
+      $errorMessage.hide();
+      return true;
+    }
+
+    // Check if session storage contains the values
+    if (fundData) {
+      // Populate the form fields with these values
+      $('#fundName').text(fundData.fundName);
+      $('#modalFundName').text(fundData.fundName);
+      $('#modalFundType').text(fundData.fundTypeName);
+      $('#navValue').text(`₹${fundData.navValue}`);
+      $('#managerName').text(`${fundData.managerFirstName} ${fundData.managerLastName}`);
+      $('#fundMinInvestment').text(`₹${fundData.minInvestAmt}`);
+      $('#aum').text(`₹${fundData.AUM} Cr.`);
+      $('#exitLoad').text(`${fundData.exitLoad}%`);
+      $('#expenseRatio').text(`${fundData.expenseRatio}%`);
+
+
+      // Risk mapping based on fund type
+      const riskMapping = {
+        "Large-Cap": "Low",
+        "Mid-Cap": "Medium to High",
+        "Small-Cap": "High",
+        "Large & Mid cap": "Medium",
+        "Multi-Cap": "Medium to High",
+        "Focused": "High",
+        "Sector": "High",
+        "Value or Contra": "Medium to High",
+        "ELSS": "Medium to High",
+        "Flexi Cap": "Medium"
+      };
+
+      const riskLevels = {
+        "Low": 10,
+        "Medium": 50,
+        "High": 90,
+        "Medium to High": 65,
+        "Low to Medium": 30
+      };
+
+      const fundType = fundData.fundTypeName;
+      if (fundType in riskMapping) {
+        const riskLevel = riskMapping[fundType];
+        $('#fundRisk').text(riskLevel);
+
+        // Initialize Gauge.js
+        var opts = {
+          angle: 0,
+          lineWidth: 0.28,
+          radiusScale: 0.8,
+          pointer: {
+            length: 0.6,
+            strokeWidth: 0.035,
+            color: '#000000'
+          },
+          limitMax: false,
+          limitMin: false,
+          strokeColor: '#E0E0E0',
+          generateGradient: true,
+          highDpiSupport: true,
+          staticZones: [
+            { strokeStyle: "#00FF00", min: 0, max: 25 },
+            { strokeStyle: "#FFFF00", min: 25, max: 50 },
+            { strokeStyle: "#FFA500", min: 50, max: 75 },
+            { strokeStyle: "#FF0000", min: 75, max: 100 }
+          ]
+        };
+
+        var target = $('#riskGauge')[0]; // Get the canvas element
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.maxValue = 100;
+        gauge.setMinValue(0);
+        gauge.animationSpeed = 42;
+        gauge.set(riskLevels[riskLevel] || 0);
+      }
+    }
+    const endNavValue = parseFloat(fundData.navValue); // Current NAV value from your database
+    const startNavValue = 50; // Default start NAV value you want to use
+
+    // Function to calculate CAGR
+    function calculateCAGR(startValue, endValue, years) {
+      return ((endValue / startValue) ** (1 / years) - 1) * 100; // Result in percentage
+    }
+
+    // Calculating CAGR values for each year using the fixed startNavValue
+    let cagrValues = {};
+    for (let i = 1; i <= 5; i++) {
+      cagrValues[i] = calculateCAGR(startNavValue, endNavValue, i).toFixed(2) + '%';
+    }
+
+    // Function to update the CAGR display
+    function updateCagrDisplay(year) {
+      $('#cagrValue').text(cagrValues[year]); // Update the CAGR value in the span
+      $('#yearDropdown').text(`Year ${year}`); // Update dropdown button text
+    }
+
+    // Set default view to 1-year CAGR
+    updateCagrDisplay(1);
+
+    // Handle Dropdown Selection and Display the Corresponding CAGR
+    $('.dropdown-item').on('click', function() {
+      let selectedYear = $(this).data('year'); // Get the selected year from data attribute
+      updateCagrDisplay(selectedYear); // Update display based on selected year
+    });
+  });
+</script>
+
+</body>
+</html>
