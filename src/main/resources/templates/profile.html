@@ -198,7 +198,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="updatePasswordForm" th:action="@{/account/updatePassword}" method="post">
+        <form id="updatePasswordForm" th:action="@{/account/updatePassword}" method="post"  >
           <div class="form-group">
             <label for="currentPassword">Current Password:</label>
             <div class="input-group">
@@ -253,6 +253,44 @@
 <script>
 
   const updateProfileButton = document.getElementById('add');
+
+  $(document).ready(function () {
+    $("#updatePasswordForm").on("submit", function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Collect form data
+      const formData = $(this).serialize();
+
+      // Send AJAX request
+      $.ajax({
+        type: "POST",
+        url: "/account/updatePassword", // Adjust URL as needed
+        data: formData,
+        success: function(response) {
+          // Hide the modal
+          $('#changePasswordModal').modal('hide');
+
+          // Show success alert message
+          $("#alert").removeClass("d-none alert-danger").addClass("alert-success");
+          $("#alert").text("Password updated successfully!"); // Customize the success message
+          $("#alert").show();
+
+          // Optionally, hide the alert after a few seconds
+          setTimeout(function() {
+            $("#alert").fadeOut();
+          }, 3000);
+        },
+        error: function(xhr) {
+          // Handle error response
+          const errorMessage = xhr.responseText || "An error occurred. Please try again.";
+          $("#alert").removeClass("d-none alert-success").addClass("alert-danger");
+          $("#alert").text(errorMessage);
+          $("#alert").show();
+        }
+      });
+    });
+  });
+
 
   $(document).ready(function () {
     $("#profileUpdateForm").on("submit", function(event) {
