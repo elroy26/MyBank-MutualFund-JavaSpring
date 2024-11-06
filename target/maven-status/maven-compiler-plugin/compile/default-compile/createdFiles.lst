@@ -1,7 +1,9 @@
 mybank\mutualfund\mutualfundmybank\dao\entity\FundAvailed.class
 mybank\mutualfund\mutualfundmybank\dao\services\CustomerDbRepo.class
 mybank\mutualfund\mutualfundmybank\dao\services\FundDbRepo.class
+mybank\mutualfund\mutualfundmybank\webservice\soap\SoapServiceConfiguration.class
 mybank\mutualfund\mutualfundmybank\webservice\security\controller\FundController.class
+mybank\mutualfund\mutualfundmybank\webservice\soap\FundSearchEndpoint.class
 mybank\mutualfund\mutualfundmybank\webservice\security\loginhandler\CustomerSuccessHandler.class
 mybank\mutualfund\mutualfundmybank\webservice\security\configs\PasswordConfig.class
 mybank\mutualfund\mutualfundmybank\dao\entity\FundManager.class

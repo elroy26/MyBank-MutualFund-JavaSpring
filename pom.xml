@@ -13,26 +13,18 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>MutualFund-MyBank</name>
     <description>MutualFund-MyBank</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+
     <properties>
-        <java.version>22</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -42,6 +34,71 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-tx</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.sun.xml.bind</groupId>-->
+<!--            <artifactId>jaxb-core</artifactId>-->
+<!--            <version>2.3.0.1</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.sun.xml.bind</groupId>-->
+<!--            <artifactId>jaxb-impl</artifactId>-->
+<!--            <version>2.3.1</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.javassist</groupId>-->
+<!--            <artifactId>javassist</artifactId>-->
+<!--            <version>3.25.0-GA</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/jakarta.jws/jakarta.jws-api -->
+        <dependency>
+            <groupId>jakarta.jws</groupId>
+            <artifactId>jakarta.jws-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+
+        <!--        <dependency>-->
+<!--            <groupId>org.glassfish.jaxb</groupId>-->
+<!--            <artifactId>jaxb-runtime</artifactId>-->
+<!--            <version>4.0.5</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish.jaxb</groupId>-->
+<!--            <artifactId>jaxb-xjc</artifactId>-->
+<!--            <version>4.0.1</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -83,18 +140,40 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaDirectory>src/main/resources</schemaDirectory>
+                    <schemaFiles>fund.xsd</schemaFiles>
+                    <outputDirectory>src/main/java</outputDirectory>
+                    <clearOutputDir>false</clearOutputDir>
+                </configuration>
+
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>22</source>
-                    <target>22</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </build>
 

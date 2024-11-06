@@ -143,7 +143,7 @@ public class FundDbRepo implements FundRepository {
 
         String sql = "UPDATE FUND_AVAILED " +
                 "SET amt_invested = ?, units = ? " +
-                "WHERE fund_available_id = ? AND account_id = ?";
+                "WHERE fund_available_id = ? AND account_id = ? AND FUND_STATUS='active'";
 
         try {
 
@@ -165,7 +165,7 @@ public class FundDbRepo implements FundRepository {
     public String callSellFundAvailed(FundAvailed availed) {
         String sql = "UPDATE FUND_AVAILED " +
                 "SET FUND_STATUS = ?, END_DATE = ? " +
-                "WHERE FUND_AVAILABLE_ID = ? AND ACCOUNT_ID = ?";
+                "WHERE FUND_AVAILABLE_ID = ? AND ACCOUNT_ID = ? AND FUND_STATUS='active'";
         try{
             jdbcTemplate.update(sql,
                     availed.getFundStatus(),

@@ -20,3 +20,5 @@ C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutua
 C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutualfundmybank\webservice\security\controller\FundController.java
 C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutualfundmybank\webservice\security\loginhandler\CustomerFailureHandler.java
 C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutualfundmybank\webservice\security\loginhandler\CustomerSuccessHandler.java
+C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutualfundmybank\webservice\soap\FundSearchEndpoint.java
+C:\Users\elroy\Documents\MutualFund-MyBank\src\main\java\mybank\mutualfund\mutualfundmybank\webservice\soap\SoapServiceConfiguration.java
