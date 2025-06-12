@@ -1,5 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.dao.remotes;
 
+import mybank.mutualfund.mutualfundmybank.dao.entity.AvailableFunds;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;
 import mybank.mutualfund.mutualfundmybank.dao.exceptions.FundException;

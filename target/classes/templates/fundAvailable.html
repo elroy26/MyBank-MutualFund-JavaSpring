@@ -118,22 +118,22 @@
           <a th:href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
              class="btn btn-apply"
              th:data-href="@{/ui/apply/{id}(id=${fund.fundAvailableId})}"
-              th:data-fund-id="${fund.fundAvailableId}"
-              th:data-fund-name="${fund.fundName}"
-              th:data-fund-type-id="${fund.fundTypeId}"
-              th:data-fund-type-name="${fund.fundTypeName}"
-              th:data-expense-ratio="${fund.expenseRatio}"
-              th:data-nav-value="${fund.navValue}"
-              th:data-manager-id="${fund.managerId}"
-              th:data-manager-first-name="${fund.firstName}"
-              th:data-manager-last-name="${fund.lastName}"
-              th:data-exit-load="${fund.exitLoad}"
-              th:data-aum="${fund.AUM}"
-              th:data-min-invest-amt="${fund.minInvestAmt}"
-              th:data-fund-company-id="${fund.fundCompanyId}"
-              th:data-fund-company-name="${fund.fundCompanyName}"
-              onclick="storeFundDetails(event)">
-              <i class="bi bi-arrow-right-circle"></i> Invest
+             th:data-fund-id="${fund.fundAvailableId}"
+             th:data-fund-name="${fund.fundName}"
+             th:data-fund-type-id="${fund.fundTypeId}"
+             th:data-fund-type-name="${fund.fundTypeName}"
+             th:data-expense-ratio="${fund.expenseRatio}"
+             th:data-nav-value="${fund.navValue}"
+             th:data-manager-id="${fund.managerId}"
+             th:data-manager-first-name="${fund.firstName}"
+             th:data-manager-last-name="${fund.lastName}"
+             th:data-exit-load="${fund.exitLoad}"
+             th:data-aum="${fund.AUM}"
+             th:data-min-invest-amt="${fund.minInvestAmt}"
+             th:data-fund-company-id="${fund.fundCompanyId}"
+             th:data-fund-company-name="${fund.fundCompanyName}"
+             onclick="storeFundDetails(event)">
+            <i class="bi bi-arrow-right-circle"></i> Invest
           </a>
 
 
@@ -224,60 +224,60 @@
     }
   });
 
-//     $(document).ready(function() {
-//     let debounceTimer;
-//
-//     // Event handler for search input
-//     $('#fundSearch').on('input', function() {
-//       clearTimeout(debounceTimer);
-//       debounceTimer = setTimeout(() => {
-//         let query = $(this).val(); // Get the search query
-//
-//         if (query.length > 0) { // Proceed only if there is some input
-//           $.ajax({
-//             url: '/ui/searchFunds', // Backend endpoint for the search
-//             type: 'GET',
-//             data: { searchTerm: query }, // Send the input value as 'searchTerm'
-//             success: function(funds) {
-//               updateFundCards(funds); // Update the UI with the returned fund data
-//             },
-//             error: function() {
-//               $('#fundCardsContainer').html('<p>Error fetching results</p>');
-//             }
-//           });
-//         } else {
-//           $('#fundCardsContainer').empty(); // Clear results if input is empty
-//         }
-//       }, 300); // Wait for 300ms after last keypress before sending request
-//     });
-//
-//     // Function to update fund cards
-//     function updateFundCards(funds) {
-//       let fundCardsContainer = $('#fundCardsContainer');
-//       fundCardsContainer.empty(); // Clear previous results
-//
-//       if (funds.length === 0) {
-//         fundCardsContainer.html('<p>No mutual funds found</p>');
-//       } else {
-//         $.each(funds, function(index, fund) {
-//           let cardHTML = `
-//     <div class="card mb-3">
-//         <div class="card-body d-flex align-items-center" style="background-color: rgba(248,165,124,0.31)">
-//             <i class="bi bi-bank2 me-3" style="font-size: 34px; color: #182052;"></i> <!-- Icon on the left with right margin -->
-//             <div>
-//                 <h5 class="card-title mb-1" style="color: #182052">${fund.fundName}</h5>
-//                 <p class="card-text" style="color: #182052">Growth • Equity • ${fund.fundTypeName}</p>
-//             </div>
-//         </div>
-//     </div>
-// `;
-//
-//           fundCardsContainer.append(cardHTML); // Append each card
-//         });
-//       }
-//       fundCardsContainer.show(); // Ensure results container is visible
-//     }
-//   });
+  //     $(document).ready(function() {
+  //     let debounceTimer;
+  //
+  //     // Event handler for search input
+  //     $('#fundSearch').on('input', function() {
+  //       clearTimeout(debounceTimer);
+  //       debounceTimer = setTimeout(() => {
+  //         let query = $(this).val(); // Get the search query
+  //
+  //         if (query.length > 0) { // Proceed only if there is some input
+  //           $.ajax({
+  //             url: '/ui/searchFunds', // Backend endpoint for the search
+  //             type: 'GET',
+  //             data: { searchTerm: query }, // Send the input value as 'searchTerm'
+  //             success: function(funds) {
+  //               updateFundCards(funds); // Update the UI with the returned fund data
+  //             },
+  //             error: function() {
+  //               $('#fundCardsContainer').html('<p>Error fetching results</p>');
+  //             }
+  //           });
+  //         } else {
+  //           $('#fundCardsContainer').empty(); // Clear results if input is empty
+  //         }
+  //       }, 300); // Wait for 300ms after last keypress before sending request
+  //     });
+  //
+  //     // Function to update fund cards
+  //     function updateFundCards(funds) {
+  //       let fundCardsContainer = $('#fundCardsContainer');
+  //       fundCardsContainer.empty(); // Clear previous results
+  //
+  //       if (funds.length === 0) {
+  //         fundCardsContainer.html('<p>No mutual funds found</p>');
+  //       } else {
+  //         $.each(funds, function(index, fund) {
+  //           let cardHTML = `
+  //     <div class="card mb-3">
+  //         <div class="card-body d-flex align-items-center" style="background-color: rgba(248,165,124,0.31)">
+  //             <i class="bi bi-bank2 me-3" style="font-size: 34px; color: #182052;"></i> <!-- Icon on the left with right margin -->
+  //             <div>
+  //                 <h5 class="card-title mb-1" style="color: #182052">${fund.fundName}</h5>
+  //                 <p class="card-text" style="color: #182052">Growth • Equity • ${fund.fundTypeName}</p>
+  //             </div>
+  //         </div>
+  //     </div>
+  // `;
+  //
+  //           fundCardsContainer.append(cardHTML); // Append each card
+  //         });
+  //       }
+  //       fundCardsContainer.show(); // Ensure results container is visible
+  //     }
+  //   });
   function storeFundDetails(event) {
     // Prevent the default link behavior so the storage is done before navigation
     event.preventDefault();

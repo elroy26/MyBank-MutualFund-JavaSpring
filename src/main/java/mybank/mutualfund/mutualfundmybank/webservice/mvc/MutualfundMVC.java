@@ -1,9 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.webservice.mvc;
 
-import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
-import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerLogin;
-import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
-import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;
+import mybank.mutualfund.mutualfundmybank.dao.entity.*;
 import mybank.mutualfund.mutualfundmybank.dao.exceptions.FundException;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.CustomerRepository;
 import mybank.mutualfund.mutualfundmybank.dao.remotes.FundRepository;
@@ -51,6 +48,14 @@ public class MutualfundMVC {
         return "dashboard";
     }
 
+    @GetMapping("/aiFundAnalytics")
+    public String aiFundAnalytics() {
+        return "aiFundAnalytics"; // Must match template filename exactly
+    }
+    @GetMapping("/aboutUs")
+    public String aboutUs() {
+        return "aboutUs"; // Must match template filename exactly
+    }
 
 
     @GetMapping("/signup")
@@ -111,9 +116,9 @@ public class MutualfundMVC {
     public String applyToFund(@PathVariable("id") Integer fundId, Model model) {
         // Fetch the fund details if needed
         try {
-            List<FundAvailable> fund = fundRepository.callAllFundAvailable(); // Implement this method
+            List<FundAvailable> fund = fundRepository.callAllFundAvailable();
             model.addAttribute("fund", fund);
-            return "applyIMutualFund"; // Thymeleaf template for applying
+            return "applyIMutualFund";
         } catch (Exception e) {
             model.addAttribute("error", "Unable to apply to the fund: " + e.getMessage());
             return "redirect:/fund/fundAvailable?error";

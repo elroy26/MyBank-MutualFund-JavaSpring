@@ -7,10 +7,87 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+
     <script th:src="@{'/js/dashboard.js'}"></script>
+    <style>
+
+
+        /* Chatbot Container */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Chatbot Header */
+        .card-header {
+            background-color: #f25c19;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .card-header p {
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+        /* Chatbot Body */
+        .card-body {
+            background-color: #fff5ee; /* Light shade of orange */
+            color: #f25c19;
+        }
+
+        #chat-history {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        #chat-history div {
+            margin-bottom: 10px;
+        }
+
+        /* User Input Field */
+        #textAreaExample {
+            resize: none;
+            background-color: #ffeadf; /* Subtle orange shade */
+            border-color: #f25c19;
+        }
+
+        textarea::placeholder {
+            color: #f25c19;
+        }
+
+        /* Send Button Styling */
+        chattoggle {
+            background-color: #182052;
+
+
+
+        }
+
+        chattoggle:hover {
+            background-color: #f25c19;
+            border-color: #f25c19;
+            color: white;
+        }
+
+        .modal-dialog {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            margin: 0;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+
 </head>
 <body>
 <div th:fragment="dashboard">
@@ -41,12 +118,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item pl-4">
-                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdownToggle" th:href="@{/fund/fundAvailable}">
+                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdownToggle" th:href="@{/ui/aiFundAnalytics}">
                             <i class="bi bi-house-door-fill" style="font-size: 18px;"></i> Home
                         </a>
                     </li>
+                    <li class="nav-item pl-4">
+                        <a class="nav-link" style="font-size: 17px; font-family: 'Poppins', sans-serif;" id="accountsDropdown" th:href="@{/fund/fundAvailable}">
+                            <i class="bi bi-wallet-fill" style="font-size: 18px;"></i> Fund Available
+                        </a>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" href="#" id="insuranceDropdown">
+                        <a class="nav-link pl-3" style="font-size: 17px; font-family: 'Poppins', sans-serif;" th:href="@{/ui/aboutUs}" id="insuranceDropdown">
                             <i class="bi bi-info-circle-fill" style="font-size: 18px;"></i> About Us
                         </a>
                     </li>
@@ -85,7 +167,108 @@
             </div>
         </div>
     </div>
+    <button class="btn btn-warning" style="position: fixed; bottom: 20px; right: 20px; z-index: 1050;" data-bs-toggle="modal" data-bs-target="#chatbotModal">
+        <i class="bi bi-chat-dots-fill"></i>
+        Open Chatbot
+    </button>
 
+    <!-- Chatbot Modal -->
+    <div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" style="position: fixed; bottom: 20px; right: 20px; margin: 0;">
+            <div class="modal-content" style="width: 300px; border-radius: 15px;">
+                <!-- Chatbot Header -->
+                <div class="card-header d-flex justify-content-between align-items-center bg-info p-3 text-white border-bottom-0"
+                     style="border-top-left-radius: 15px; border-top-right-radius: 15px; ">
+                    <i class="fas fa-angle-left"></i>
+                    <p class="mb-0 fw-bold">Ask your query's here</p>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Chatbot Body -->
+                <div class="card-body" id="chat-body" >
+                    <!-- Chat History -->
+                    <div id="chat-history" style="max-height: 500px; overflow-y: auto;"></div>
+
+                    <!-- User Input -->
+                    <div class="d-flex align-items-center mt-4">
+                        <textarea class="form-control border-warning bg-warning-subtle bg-body-tertiary me-2" id="textAreaExample" rows="1" placeholder="Type your message"></textarea>
+                        <button class="btn btn-warning rounded-3" onclick="sendMessage()">
+                            <i class="bi bi-arrow-up-circle-fill h5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleChatbot() {
+        const chatbotBox = document.getElementById('chatbot-box');
+        chatbotBox.classList.toggle('d-none');
+    }
+    function sendMessage() {
+        const userQuery = document.getElementById('textAreaExample').value.trim();
+        const chatHistory = document.getElementById('chat-history');
+
+        if (userQuery) {
+            // Append user's message to chat history
+            const userMessage = document.createElement('div');
+            userMessage.className = 'd-flex flex-row justify-content-end mb-4';
+            userMessage.innerHTML = `
+          <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
+            <p class="small mb-0">${userQuery}</p>
+          </div>
+          <img src="https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png"
+               alt="avatar 1" style="width: 45px; height: 100%;">
+        `;
+            chatHistory.appendChild(userMessage);
+
+            // Clear input field
+            document.getElementById('textAreaExample').value = '';
+
+            // Scroll to the bottom of the chat history
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // AJAX Call to Backend API
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:5000/ui/chat", // Flask backend endpoint
+                contentType: "application/json",
+                data: JSON.stringify({ query: userQuery }),
+                success: function(response) {
+                    // Append chatbot's response to chat history
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'd-flex flex-row justify-content-start mb-4';
+                    botMessage.innerHTML = `
+                  <img src="https://cdn-icons-png.flaticon.com/512/1786/1786548.png"
+                       alt="avatar 1" style="width: 45px; height: 100%;">
+                  <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                    <p class="small mb-0">${response.answer}</p>
+                  </div>
+                `;
+                    chatHistory.appendChild(botMessage);
+
+                    // Scroll to the bottom of the chat history
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                },
+                error: function(err) {
+                    console.error("Error:", err);
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'd-flex flex-row justify-content-start mb-4';
+                    botMessage.innerHTML = `
+                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                       alt="avatar 1" style="width: 45px; height: 100%;">
+                  <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                    <p class="small mb-0">Chatbot encountered an error. Please try again later.</p>
+                  </div>
+                `;
+                    chatHistory.appendChild(botMessage);
+                }
+            });
+        }
+    }
+
+</script>
 </div>
 
 </body>

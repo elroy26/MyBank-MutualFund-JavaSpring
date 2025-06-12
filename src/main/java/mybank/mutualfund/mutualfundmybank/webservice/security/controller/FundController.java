@@ -1,5 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.webservice.security.controller;
 
+import mybank.mutualfund.mutualfundmybank.dao.entity.AvailableFunds;
 import mybank.mutualfund.mutualfundmybank.dao.entity.CustomerAccount;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;

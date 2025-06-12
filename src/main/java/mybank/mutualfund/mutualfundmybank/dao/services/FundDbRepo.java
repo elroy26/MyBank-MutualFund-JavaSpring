@@ -1,5 +1,6 @@
 package mybank.mutualfund.mutualfundmybank.dao.services;
 
+import mybank.mutualfund.mutualfundmybank.dao.entity.AvailableFunds;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailable;
 import mybank.mutualfund.mutualfundmybank.dao.entity.FundAvailed;
 import mybank.mutualfund.mutualfundmybank.dao.exceptions.FundException;
@@ -21,8 +22,6 @@ public class FundDbRepo implements FundRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     Logger LOGGER = LoggerFactory.getLogger(FundDbRepo.class);
-
-
 
     @Override
     public List<FundAvailable> callAllFundAvailable() throws SQLException {
@@ -61,6 +60,25 @@ public class FundDbRepo implements FundRepository {
 
         return fundAvailableList;
     }
+//    @Override
+//    public List<AvailableFunds> callAllFundAvailable() throws SQLException {
+//        List<AvailableFunds> fundAvailableList = null;
+//        String sql = "SELECT * FROM available_funds";
+//
+//        try {
+//            fundAvailableList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AvailableFunds.class));
+//            LOGGER.info("Total fund available: {}", fundAvailableList.size());
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage());
+//            throw new SQLException(e.getMessage());
+//        }
+//
+//        if (fundAvailableList.isEmpty()) {
+//            throw new FundException("There is no fund available");
+//        }
+//
+//        return fundAvailableList;
+//    }
 
     @Override
     public String callSaveFundAvailed(FundAvailed availed) throws SQLException, FundException {
